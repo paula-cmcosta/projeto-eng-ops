@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report Eng Ops Semanal — 08 a 14/03/2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f4fc; color: #2d2d2d; }
+  .page { max-width: 960px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  /* HEADER */
+  .header { background: #ffffff; border-left: 6px solid #5A1E82; border-radius: 0 10px 10px 0; padding: 24px 32px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(90,30,130,.10); }
+  .header h1 { font-size: 24px; font-weight: 800; color: #3D1466; margin-bottom: 6px; letter-spacing: -.3px; }
+  .header .subtitle { font-size: 13px; color: #888; }
+  .header .subtitle span { color: #5A1E82; font-weight: 600; }
+
+  /* CARDS */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .card { background: white; border-radius: 10px; padding: 20px 16px; text-align: center; box-shadow: 0 2px 8px rgba(90,30,130,.08); }
+  .card .value { font-size: 32px; font-weight: 700; color: #5A1E82; line-height: 1.1; }
+  .card .label { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.4; }
+  .card .delta { font-size: 12px; margin-top: 6px; font-weight: 600; }
+  .delta.good { color: #1e8a3e; }
+  .delta.bad { color: #c0392b; }
+  .delta.neutral { color: #888; }
+
+  /* SECTIONS */
+  .section { background: white; border-radius: 10px; padding: 24px 28px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(90,30,130,.08); }
+  .section h2 { font-size: 15px; font-weight: 700; color: #5A1E82; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0eaf8; }
+
+  /* CHARTS */
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .chart-box h3 { font-size: 13px; font-weight: 600; color: #444; text-align: center; margin-bottom: 12px; }
+  .chart-canvas { position: relative; height: 220px; }
+  .period-note { font-size: 11px; color: #888; text-align: center; margin-top: 10px; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f0eaf8; color: #5A1E82; font-weight: 600; padding: 9px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid #f5f0fb; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #faf7fd; }
+  .pct-bar { display: flex; align-items: center; gap: 8px; }
+  .pct-fill { height: 8px; background: #7B4FA6; border-radius: 4px; }
+  a { color: #5A1E82; text-decoration: none; font-weight: 600; }
+  a:hover { text-decoration: underline; }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-purple { background: #ede5f8; color: #5A1E82; }
+  .badge-red { background: #fdecea; color: #c0392b; }
+  .badge-both { background: #fff3e0; color: #e67e22; }
+  .badge-new { background: #e8f5e9; color: #1e8a3e; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-left: 4px; vertical-align: middle; }
+
+  /* REPORTERS */
+  .reporters-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .insight-box { background: #fffbe6; border-left: 4px solid #f1c40f; border-radius: 6px; padding: 14px 16px; margin-top: 16px; font-size: 13px; line-height: 1.6; color: #5d4a00; }
+  .insight-box strong { display: block; margin-bottom: 4px; color: #7d6500; }
+
+  /* MONTHLY */
+  .monthly-chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
+  .monthly-note { font-size: 11px; color: #888; text-align: center; margin-top: 8px; }
+  .tag-open { display: inline-block; background: #e8f5e9; color: #1e8a3e; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px; vertical-align: middle; margin-left: 4px; }
+
+  /* MONTHLY ACCUMULATED BADGE */
+  .acc-badge { display: inline-block; background: #e8f5e9; color: #1e8a3e; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-left: 8px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Mobility - Travel &nbsp;|&nbsp; Semana 08–14/03/2026</h1>
+    <div class="subtitle">Relatório semanal de escalonamentos indevidos para <span>Eng Ops</span> &nbsp;·&nbsp; Gerado em 16/03/2026</div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="cards">
+    <div class="card">
+      <div class="value">36</div>
+      <div class="label">Tickets na fila na semana</div>
+    </div>
+    <div class="card">
+      <div class="value">7</div>
+      <div class="label">Escalonados indevidamente</div>
+    </div>
+    <div class="card">
+      <div class="value">19,4%</div>
+      <div class="label">Taxa de escalonamento indevido</div>
+    </div>
+    <div class="card">
+      <div class="value">↓4</div>
+      <div class="label">Variação vs semana anterior</div>
+      <div class="delta good">44% → 19,4% &nbsp;(↓25pp)</div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 1: TENDÊNCIA SEMANAL -->
+  <div class="section">
+    <h2>1. Tendência — Últimas 4 Semanas</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <h3>Tickets na fila por semana — devidamente vs indevidamente escalados</h3>
+        <div class="chart-canvas"><canvas id="chartBar"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>% de escalonamento indevido por semana</h3>
+        <div class="chart-canvas"><canvas id="chartLine"></canvas></div>
+      </div>
+    </div>
+    <div class="period-note">Janela móvel: 15/02–21/02 | 22/02–28/02 | 01/03–07/03 | 08/03–14/03</div>
+  </div>
+
+  <!-- SEÇÃO 2: CAUSAS RAIZ -->
+  <div class="section">
+    <h2>2. Causas Raiz — Semana 08–14/03</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Causa Raiz</th>
+          <th>Tickets</th>
+          <th style="width:200px">%</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Processo não documentado ou não seguido — SLA desconhecido</td>
+          <td><strong>3</strong></td>
+          <td><div class="pct-bar"><div class="pct-fill" style="width:100%"></div><span>42,9%</span></div></td>
+        </tr>
+        <tr>
+          <td>Processo não documentado ou não seguido — verificação prévia</td>
+          <td><strong>2</strong></td>
+          <td><div class="pct-bar"><div class="pct-fill" style="width:67%"></div><span>28,6%</span></div></td>
+        </tr>
+        <tr>
+          <td>Processo não documentado ou não seguido — canal de acionamento</td>
+          <td><strong>2</strong></td>
+          <td><div class="pct-bar"><div class="pct-fill" style="width:67%"></div><span>28,6%</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SEÇÃO 3: TABELA DETALHADA -->
+  <div class="section">
+    <h2>3. Tabela Detalhada — Semana 08–14/03</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Ticket</th>
+          <th>Data</th>
+          <th>Reporter</th>
+          <th>Tipo</th>
+          <th>Causa Raiz</th>
+          <th>Observação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12346" target="_blank">BUNOPS-12346</a></td>
+          <td>09/03</td>
+          <td>Caio Veronesi</td>
+          <td><span class="badge badge-purple">NO ENG OPS</span></td>
+          <td>Processo não documentado ou não seguido — verificação prévia</td>
+          <td>Cliente alegou ter tido Conta Global no passado e estar sem acesso. Eng Ops confirmou que o cliente <strong>nunca teve Conta Global</strong> e orientou a abrir pelo app. O agente deveria ter verificado o histórico do cliente nas ferramentas de backoffice antes de escalar.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12357" target="_blank">BUNOPS-12357</a></td>
+          <td>09/03</td>
+          <td>Valeria Kaneda</td>
+          <td><span class="badge badge-purple">NO ENG OPS</span></td>
+          <td>Processo não documentado ou não seguido — verificação prévia</td>
+          <td>Cliente alegou não ter recebido reembolso de R$ 2.224,35 de pagamento cancelado. Eng Ops localizou comprovante confirmando que a <strong>devolução já havia sido realizada em 15/01/2026</strong>. O agente escalou sem verificar o status da transação nas ferramentas disponíveis.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12400" target="_blank">BUNOPS-12400</a></td>
+          <td>11/03</td>
+          <td>Bárbara Diniz</td>
+          <td><span class="badge badge-purple">NO ENG OPS</span></td>
+          <td>Processo não documentado ou não seguido — canal de acionamento</td>
+          <td>Cliente com saída definitiva do Brasil e saldo residual de EUR 0,10 precisava cancelar a Conta Global. Eng Ops redirecionou para <strong>Wise via Zendesk (segundo nível)</strong>, com cards documentados no Weduka. O fluxo correto existe — o agente acionou o canal errado.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12421" target="_blank">BUNOPS-12421</a></td>
+          <td>11/03</td>
+          <td>Isabelle Santos</td>
+          <td><span class="badge badge-purple">NO ENG OPS</span></td>
+          <td>Processo não documentado ou não seguido — canal de acionamento</td>
+          <td>Cliente não conseguia cancelar a Conta Global por saldo abaixo do mínimo para resgate. Eng Ops orientou a solicitar cancelamento e resgate <strong>diretamente à Wise via Zendesk</strong>, conforme cards do Weduka. Mesmo fluxo não seguido que BUNOPS-12400 na mesma semana.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12426" target="_blank">BUNOPS-12426</a></td>
+          <td>11/03</td>
+          <td>Ana Carvalho</td>
+          <td><span class="badge badge-purple">NO ENG OPS</span></td>
+          <td>Processo não documentado ou não seguido — SLA desconhecido</td>
+          <td>Cancelamento realizado pela Wise em 07/03, mas conta ainda aparecia como ativa no Shuffle e no app. Eng Ops informou que <strong>o processo leva até 7 dias para refletir</strong> após o cancelamento pela Wise. Se o agente soubesse desse SLA, poderia ter orientado o cliente sem escalar.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12463" target="_blank">BUNOPS-12463</a></td>
+          <td>12/03</td>
+          <td>Aline Santos</td>
+          <td><span class="badge badge-purple">NO ENG OPS</span></td>
+          <td>Processo não documentado ou não seguido — SLA desconhecido</td>
+          <td>Agente assumiu que o cliente já estava ativo no rollout de isenção de spread. Eng Ops confirmou que a solicitação de inclusão havia sido feita recentemente e que o <strong>SLA é de 7 dias</strong> — o cliente já havia sido informado sobre o prazo. O agente escalou sem verificar o status da inclusão.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12482" target="_blank">BUNOPS-12482</a></td>
+          <td>13/03</td>
+          <td>Bruna Diniz</td>
+          <td><span class="badge badge-purple">NO ENG OPS</span></td>
+          <td>Processo não documentado ou não seguido — SLA desconhecido</td>
+          <td>A Wise já havia realizado o cancelamento da Conta Global (ticket 116985949), mas o cliente ainda via a funcionalidade no app. Eng Ops informou que <strong>o processo leva até 7 dias para refletir</strong>. O agente deveria ter comunicado esse prazo ao cliente em vez de escalar. Mesmo padrão de BUNOPS-12426.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SEÇÃO 4: VISÃO MENSAL -->
+  <div class="section">
+    <h2>4. Visão Mensal — Dez/2025 a Mar/2026</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <h3>Volume total vs escalados indevidos por mês</h3>
+        <div class="chart-canvas"><canvas id="chartMonthlyBar"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>% de escalonamento indevido por mês</h3>
+        <div class="chart-canvas"><canvas id="chartMonthlyLine"></canvas></div>
+      </div>
+    </div>
+    <div class="monthly-note" style="margin-bottom:20px">* Dez/Jan: categoria NO ENG OPS ainda não era utilizada ativamente — escalados refletem apenas Won't Do</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+      <table>
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th>Total</th>
+            <th>Escalados</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Dezembro</td><td>103</td><td>1</td><td>1,0%</td></tr>
+          <tr><td>Janeiro</td><td>93</td><td>5</td><td>5,4%</td></tr>
+          <tr><td>Fevereiro</td><td>99</td><td>30</td><td>30,3%</td></tr>
+          <tr><td>Março <span class="tag-open">em aberto</span></td><td>61</td><td>18</td><td>29,5%</td></tr>
+        </tbody>
+      </table>
+      <div class="insight-box">
+        <strong>Tendência mensal</strong>
+        O patamar de ~30% se mantém estável desde fevereiro. A semana de 08–14/03 trouxe alívio pontual (19,4%), puxado pelo maior volume de tickets tratados corretamente. A taxa acumulada de março (29,5%) ainda está em linha com fevereiro, indicando que o problema estrutural persiste e o resultado desta semana pode ser flutuação, não tendência de queda.
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 5: REPORTERS — ACUMULADO MENSAL -->
+  <div class="section">
+    <h2>5. Reporters — Acumulado Março/2026 <span class="acc-badge">01–14/03 · 2ª semana</span></h2>
+    <p style="font-size:12px;color:#888;margin-bottom:20px">
+      Visão acumulada do mês corrente. Atualizada semanalmente — concentra os dados de todos os escalamentos indevidos do mês para identificar padrões de treinamento com maior clareza. Reporters com <span style="background:#e8f5e9;color:#1e8a3e;font-size:11px;font-weight:700;padding:1px 6px;border-radius:8px;">novo</span> apareceram pela primeira vez nesta semana.
+    </p>
+    <div class="reporters-row">
+      <div>
+        <div class="chart-box">
+          <h3>Reporters com escalamentos indevidos — março/26 acumulado</h3>
+          <div class="chart-canvas" style="height:300px"><canvas id="chartReporters"></canvas></div>
+        </div>
+      </div>
+      <div>
+        <table>
+          <thead>
+            <tr><th>Reporter</th><th>Tickets</th><th>Principais causas</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Caio Veronesi <span class="badge-new">novo</span></td><td>2</td><td>Canal errado — #core-identity-helpdesk</td></tr>
+            <tr><td>Bruna Diniz <span class="badge-new">novo</span></td><td>2</td><td>SLA desconhecido + Caso auto-resolvido</td></tr>
+            <tr><td>Samara Souza</td><td>2</td><td>Fila errada — Detran</td></tr>
+            <tr><td>Flávia Góes</td><td>1</td><td>Limitação de produto</td></tr>
+            <tr><td>Reuel Passos</td><td>1</td><td>Canal errado — #core-identity-helpdesk</td></tr>
+            <tr><td>Ricardo Ramalho</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Kátia Gouvea</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Fabiana Saraiva</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Helen Cologis</td><td>1</td><td>Canal errado — IR/Tax</td></tr>
+            <tr><td>Liliane Oliveira</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Valeria Kaneda <span class="badge-new">novo</span></td><td>1</td><td>Fila errada — Detran</td></tr>
+            <tr><td>Bárbara Diniz <span class="badge-new">novo</span></td><td>1</td><td>Limitação de produto</td></tr>
+            <tr><td>Isabelle Santos <span class="badge-new">novo</span></td><td>1</td><td>Caso auto-resolvido / sem ação necessária</td></tr>
+            <tr><td>Ana Carvalho <span class="badge-new">novo</span></td><td>1</td><td>Canal errado — #core-identity-helpdesk</td></tr>
+            <tr><td>Aline Santos <span class="badge-new">novo</span></td><td>1</td><td>Responsabilidade Wise</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="insight-box">
+      <strong>Insight sistêmico — março/26 acumulado (2ª semana)</strong>
+      Com 18 escalamentos em 14 dias, março já acumula <strong>15 reporters distintos</strong> — sendo Caio Veronesi, Bruna Diniz e Samara Souza os únicos com 2 ocorrências cada. A entrada de <strong>6 novos reporters nesta semana</strong> reforça que o comportamento é distribuído e não concentrado em agentes específicos. O padrão dominante na semana foi <strong>processo não documentado ou não seguido</strong> (7 de 7 tickets, 100%): 3 por SLA desconhecido, 2 por canal de acionamento incorreto e 2 por ausência de verificação prévia — indicando que atualização de material e/ou reforço de treinamento coletivo podem ter impacto direto na redução de escalamentos.
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  const labelPlugin = {
+    id: 'datalabels',
+    afterDatasetsDraw(chart) {
+      const ctx = chart.ctx;
+      chart.data.datasets.forEach((ds, i) => {
+        const meta = chart.getDatasetMeta(i);
+        if (meta.type === 'bar') {
+          const horizontal = chart.options.indexAxis === 'y';
+          const isStacked = chart.options.scales?.y?.stacked;
+          const isLastDataset = i === chart.data.datasets.length - 1;
+          meta.data.forEach((bar, idx) => {
+            ctx.font = 'bold 11px Segoe UI, Arial, sans-serif';
+            if (isStacked && !horizontal) {
+              const segHeight = Math.abs(bar.base - bar.y);
+              const centerY = (bar.y + bar.base) / 2;
+              if (segHeight >= 14) {
+                ctx.fillStyle = i === 0 ? '#5A1E82' : 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(ds.data[idx], bar.x, centerY);
+              }
+              if (isLastDataset) {
+                const total = chart.data.datasets.reduce((sum, d) => sum + (d.data[idx] || 0), 0);
+                ctx.fillStyle = '#3a3a3a';
+                ctx.font = 'bold 12px Segoe UI, Arial, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'alphabetic';
+                ctx.fillText(total, bar.x, bar.y - 6);
+              }
+            } else if (horizontal) {
+              ctx.fillStyle = '#3a3a3a';
+              ctx.textAlign = 'left';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(ds.data[idx], bar.x + 6, bar.y);
+            } else {
+              ctx.fillStyle = '#3a3a3a';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'alphabetic';
+              ctx.fillText(ds.data[idx], bar.x, bar.y - 6);
+            }
+          });
+        }
+        if (meta.type === 'line') {
+          meta.data.forEach((pt, idx) => {
+            ctx.fillStyle = '#7B4FA6';
+            ctx.font = 'bold 11px Segoe UI, Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText(ds.data[idx] + '%', pt.x, pt.y - 10);
+          });
+        }
+      });
+    }
+  };
+  Chart.register(labelPlugin);
+
+  const weeks = ['15/02–21/02', '22/02–28/02', '01/03–07/03', '08/03–14/03'];
+
+  // Bar: stacked semanal
+  new Chart(document.getElementById('chartBar'), {
+    type: 'bar',
+    data: {
+      labels: weeks,
+      datasets: [
+        { label: 'Devidamente escalados', data: [15, 12, 14, 29], backgroundColor: '#C4A8E0', borderRadius: 0 },
+        { label: 'Indevidamente escalados', data: [7, 12, 11, 7], backgroundColor: '#5A1E82', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, layout: { padding: { top: 24 } },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.raw}` } }
+      },
+      scales: {
+        y: { stacked: true, beginAtZero: true, max: 44, ticks: { stepSize: 4, font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+        x: { stacked: true, ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Line: % por semana
+  new Chart(document.getElementById('chartLine'), {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [{
+        data: [31.8, 50.0, 44.0, 19.4],
+        borderColor: '#7B4FA6', backgroundColor: 'rgba(123,79,166,.1)',
+        tension: .4, fill: true, pointBackgroundColor: '#7B4FA6', pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw}%` } } },
+      scales: {
+        y: { beginAtZero: true, max: 65, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Monthly stacked bar
+  const months = ['Dezembro', 'Janeiro', 'Fevereiro', 'Março*'];
+  new Chart(document.getElementById('chartMonthlyBar'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Devidamente escalados', data: [102, 88, 69, 43], backgroundColor: '#C4A8E0', borderRadius: 0 },
+        { label: 'Indevidamente escalados', data: [1, 5, 30, 18], backgroundColor: '#5A1E82', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, layout: { padding: { top: 24 } },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.raw}` } }
+      },
+      scales: {
+        y: { stacked: true, beginAtZero: true, max: 120, ticks: { stepSize: 20, font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+        x: { stacked: true, ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Monthly line %
+  new Chart(document.getElementById('chartMonthlyLine'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        data: [1.0, 5.4, 30.3, 29.5],
+        borderColor: '#7B4FA6', backgroundColor: 'rgba(123,79,166,.1)',
+        tension: .4, fill: true, pointBackgroundColor: '#7B4FA6', pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw}%` } } },
+      scales: {
+        y: { beginAtZero: true, max: 45, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Reporters horizontal bar (acumulado mensal março)
+  new Chart(document.getElementById('chartReporters'), {
+    type: 'bar',
+    data: {
+      labels: ['Caio Veronesi', 'Bruna Diniz', 'Samara Souza', 'Flávia Góes', 'Reuel Passos', 'Ricardo Ramalho', 'Kátia Gouvea', 'Fabiana Saraiva', 'Helen Cologis', 'Liliane Oliveira', 'Valeria Kaneda', 'Bárbara Diniz', 'Isabelle Santos', 'Ana Carvalho', 'Aline Santos'],
+      datasets: [{ data: [2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], backgroundColor: '#7B4FA6', borderRadius: 4 }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: { right: 30 } },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, max: 4, ticks: { stepSize: 1, font: { size: 10 } }, grid: { color: '#f0eaf8' } },
+        y: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+</script>
+</body>
+</html>
