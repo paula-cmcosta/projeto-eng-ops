@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report Eng Ops Semanal — 15 a 21/03/2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f4fc; color: #2d2d2d; min-width: 900px; }
+
+  /* NAV / TABS */
+  .top-nav { position: sticky; top: 0; z-index: 100; background: #3b1066; display: flex; align-items: center; padding: 0 28px; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+  .nav-brand { font-size: 12.5px; font-weight: 700; color: #E0C8FF; padding: 13px 18px 13px 0; border-right: 1px solid rgba(255,255,255,.15); margin-right: 6px; white-space: nowrap; }
+  .tab-btn { background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: rgba(255,255,255,.65); font-size: 12px; padding: 13px 14px; white-space: nowrap; transition: color .15s; font-family: inherit; }
+  .tab-btn:hover { color: white; }
+  .tab-btn.active { color: white; border-bottom-color: #C4A8E0; }
+  .tab-page { display: none; }
+  .tab-page.active { display: block; }
+
+  /* LAYOUT */
+  .page { max-width: 1080px; margin: 0 auto; padding: 28px 24px 60px; }
+  .header { background: #fff; border-left: 6px solid #5A1E82; border-radius: 0 10px 10px 0; padding: 20px 28px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(90,30,130,.10); }
+  .header h1 { font-size: 22px; font-weight: 800; color: #3D1466; margin-bottom: 4px; }
+  .header .subtitle { font-size: 12px; color: #888; }
+  .header .subtitle span { color: #5A1E82; font-weight: 600; }
+
+  /* CARDS */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  .card { background: white; border-radius: 10px; padding: 18px 14px; text-align: center; box-shadow: 0 2px 8px rgba(90,30,130,.08); }
+  .card.c-devidos { border-top: 3px solid #4CAF50; }
+  .card.c-indevidos { border-top: 3px solid #E53935; }
+  .card.c-tratativa { border-top: 3px solid #FFB74D; }
+  .card .value { font-size: 30px; font-weight: 700; color: #5A1E82; line-height: 1.1; }
+  .card.c-indevidos .value { color: #E53935; }
+  .card .label { font-size: 11.5px; color: #666; margin-top: 5px; line-height: 1.4; }
+  .card .sub { font-size: 11px; margin-top: 4px; color: #aaa; }
+
+  /* SECTION */
+  .section { background: white; border-radius: 10px; padding: 22px 26px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(90,30,130,.08); }
+  .section h2 { font-size: 14px; font-weight: 700; color: #5A1E82; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f0eaf8; display: flex; align-items: center; gap: 8px; }
+  .sec-badge { display: inline-block; background: #f0eaf8; color: #5A1E82; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; text-transform: none; letter-spacing: 0; }
+
+  /* CHARTS */
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .chart-box h3 { font-size: 12.5px; font-weight: 600; color: #444; text-align: center; margin-bottom: 10px; }
+  .chart-canvas { position: relative; height: 210px; }
+  .period-note { font-size: 11px; color: #888; text-align: center; margin-top: 8px; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { background: #f0eaf8; color: #5A1E82; font-weight: 600; padding: 8px 11px; text-align: left; font-size: 12px; }
+  td { padding: 8px 11px; border-bottom: 1px solid #f5f0fb; vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #faf7fd; }
+  a { color: #5A1E82; text-decoration: none; font-weight: 600; font-size: 12px; }
+  a:hover { text-decoration: underline; }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+  .b-indevido { background: #ede5f8; color: #5A1E82; }
+  .b-devido { background: #e8f5e9; color: #1e8a3e; }
+  .b-tratativa { background: #fff8e1; color: #e67e22; }
+  .b-tecnico { background: #e3f2fd; color: #0D47A1; }
+  .b-evitavel { background: #fff3e0; color: #E65100; }
+  .b-pendente { background: #f5f5f5; color: #999; }
+
+  /* CAUSA RAIZ BARS */
+  .pct-bar { display: flex; align-items: center; gap: 8px; }
+  .pct-fill { height: 7px; background: #7B4FA6; border-radius: 4px; }
+
+  /* INSIGHT BOX */
+  .insight-box { background: #fffbe6; border-left: 4px solid #f1c40f; border-radius: 6px; padding: 12px 15px; margin-top: 14px; font-size: 12.5px; line-height: 1.6; color: #5d4a00; }
+  .insight-box strong { display: block; margin-bottom: 3px; color: #7d6500; }
+
+  /* METODOLOGIA NOTE */
+  .metodo-note { background: #f3f0fa; border: 1px solid #d4c5f0; border-radius: 8px; padding: 11px 15px; font-size: 11.5px; color: #555; line-height: 1.6; margin-bottom: 20px; }
+  .metodo-note strong { color: #5A1E82; }
+  .color-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 3px; vertical-align: middle; }
+
+  /* PREVIEW BANNER */
+  .preview-banner { background: #fff8e1; border: 1.5px dashed #FFB74D; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #795548; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+  /* REPORTERS */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .acc-badge { display: inline-block; background: #e8f5e9; color: #1e8a3e; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; margin-left: 6px; vertical-align: middle; }
+  .badge-new { background: #e8f5e9; color: #1e8a3e; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 7px; margin-left: 4px; }
+
+  /* DEVIDOS TABLE — highlight em tratativa rows */
+  .row-tratativa td { background: #fffef8 !important; }
+  .row-tratativa:hover td { background: #fffbee !important; }
+
+  /* MONTHLY */
+  .tag-tratativa { display: inline-block; background: #fff8e1; color: #e67e22; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 7px; vertical-align: middle; margin-left: 4px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <div class="nav-brand">Eng Ops · BU Affluents</div>
+  <button class="tab-btn active" onclick="switchTab('semana', this)">📋 Semana 15–21/03</button>
+  <button class="tab-btn" onclick="switchTab('mensal', this)">📆 Visão Mensal + Reporters</button>
+  <button class="tab-btn" onclick="switchTab('sla', this)">⏱ SLA</button>
+</nav>
+
+<!-- ══════════ TAB 1 — SEMANA ══════════ -->
+<div id="tab-semana" class="tab-page active">
+<div class="page">
+
+  <div class="header">
+    <h1>Mobility - Travel &nbsp;|&nbsp; Semana 15–21/03/2026</h1>
+    <div class="subtitle">Relatório semanal · <span>Eng Ops</span> · Prévia gerada em 19/03/2026 · Semana em andamento</div>
+  </div>
+
+  <div class="preview-banner">
+    ⚠️ <strong>Prévia parcial:</strong> semana ainda em andamento (19/03). 19 dos 24 tickets ainda estão em tratativa — os campos <em>[Asset] BunOps Category</em> e <em>[Asset] BunOps Sub-category</em> só são preenchidos após a resolução do ticket. A distribuição de devidos/indevidos será atualizada no relatório final.
+  </div>
+
+  <div class="metodo-note">
+    <strong>Categorias:</strong>
+    <span class="color-dot" style="background:#4CAF50;"></span><strong>Devidos</strong> — ticket fechado com ação de Eng Ops ·
+    <span class="color-dot" style="background:#E53935;"></span><strong>Indevidos</strong> — NO ENG OPS ou Won't Do ·
+    <span class="color-dot" style="background:#FFB74D;"></span><strong>Em tratativa</strong> — aberto ou sem classificação ainda
+  </div>
+
+  <!-- CARDS -->
+  <div class="cards">
+    <div class="card">
+      <div class="value">24</div>
+      <div class="label">Tickets na fila na semana</div>
+      <div class="sub">15/03 a 19/03 (parcial)</div>
+    </div>
+    <div class="card c-devidos">
+      <div class="value" style="color:#388E3C;">1</div>
+      <div class="label">Devidos confirmados</div>
+      <div class="sub">4% — semana em aberto</div>
+    </div>
+    <div class="card c-indevidos">
+      <div class="value">4</div>
+      <div class="label">Indevidos confirmados</div>
+      <div class="sub">16,7% de taxa parcial</div>
+    </div>
+    <div class="card c-tratativa">
+      <div class="value" style="color:#e67e22;">19</div>
+      <div class="label">Em tratativa</div>
+      <div class="sub">79% — aguardando resolução</div>
+    </div>
+  </div>
+
+  <!-- TENDÊNCIA -->
+  <div class="section">
+    <h2>1. Tendência — Últimas 4 Semanas</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <h3>Tickets — devidos · indevidos · em tratativa</h3>
+        <div class="chart-canvas"><canvas id="chartBar"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>% indevidos confirmados por semana</h3>
+        <div class="chart-canvas"><canvas id="chartLine"></canvas></div>
+      </div>
+    </div>
+    <div class="period-note">22/02–28/02 | 01/03–07/03 | 08/03–14/03 | 15/03–21/03* &nbsp;·&nbsp; *Prévia parcial — taxa ainda irá variar</div>
+  </div>
+
+  <!-- DEEP-DIVE DEVIDOS -->
+  <div class="section">
+    <h2>2. Deep-Dive — Tickets Devidos <span class="sec-badge">1 confirmado · 19 em tratativa</span></h2>
+
+    <p style="font-size:12px;color:#666;margin-bottom:14px;line-height:1.6;">
+      Os campos <strong>[Asset] BunOps Category</strong> e <strong>[Asset] BunOps Sub-category</strong> precisam ser preenchidos manualmente após a resolução do ticket — e não estavam preenchidos em nenhum dos 20 tickets desta semana, incluindo o único já finalizado (BUNOPS-12544). A coluna "BunOps Category" abaixo usa o <strong>Request Type</strong> como proxy. Campos BunOps Sub-category marcados como <span class="badge b-pendente">Pendente</span> aguardam preenchimento pelo time.
+    </p>
+
+    <!-- RT distribution mini-chart -->
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;margin-bottom:20px;align-items:start;">
+      <div>
+        <div class="chart-box">
+          <h3>Distribuição por categoria (RT) — 20 tickets devidos+em tratativa</h3>
+          <div style="position:relative;height:200px;"><canvas id="chartRTDonuts"></canvas></div>
+        </div>
+      </div>
+      <div>
+        <table>
+          <thead><tr><th>BunOps Category (RT)</th><th style="text-align:center">Total</th><th style="text-align:center">Devidos</th><th style="text-align:center">Em tratativa</th></tr></thead>
+          <tbody>
+            <tr><td>[CG] Cliente UV sem acesso</td><td style="text-align:center">7</td><td style="text-align:center">0</td><td style="text-align:center">7</td></tr>
+            <tr><td>[Detran] Pagamento e liquidação</td><td style="text-align:center">5</td><td style="text-align:center">1</td><td style="text-align:center">4</td></tr>
+            <tr><td>[CG] Transações com Cartão Global</td><td style="text-align:center">3</td><td style="text-align:center">0</td><td style="text-align:center">3</td></tr>
+            <tr><td>Deactivation report</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">1</td></tr>
+            <tr><td>[CG] Entrega do Cartão</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">1</td></tr>
+            <tr><td>[CG] Saldo e Conversão</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">1</td></tr>
+            <tr><td>[E-sim] Compatibilidade</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">1</td></tr>
+            <tr><td>[Detran] Problemas com comprovante</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tabela detalhada devidos + em tratativa -->
+    <table>
+      <thead>
+        <tr>
+          <th style="width:110px">Ticket</th>
+          <th>BunOps Category (RT)</th>
+          <th style="width:90px">BunOps Sub-cat</th>
+          <th style="width:65px">Status</th>
+          <th>Insight dos comentários</th>
+          <th style="width:120px">Causa raiz sugerida</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- DEVIDO CONFIRMADO -->
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12544" target="_blank">BUNOPS-12544</a><br><span class="badge b-devido">Devido</span></td>
+          <td><strong>[Detran] Pagamento e liquidação</strong><br><span style="font-size:11px;color:#888;">Cliente pagou mas valor não foi debitado</span></td>
+          <td><span class="badge b-tecnico">Técnico</span></td>
+          <td><span style="color:#2E7D32;font-weight:700;font-size:11px;">Done</span></td>
+          <td style="font-size:12px;">Diego consultou parceiro Detran e confirmou que <strong>todos os débitos estão corretos</strong>. Ticket finalizado após resposta do parceiro.</td>
+          <td style="font-size:11.5px;"><strong>Investigação Detran</strong><br>Ação técnica: contato com parceiro para validação de débitos.</td>
+        </tr>
+
+        <!-- EM TRATATIVA -->
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12526" target="_blank">BUNOPS-12526</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] Entrega do Cartão<br><span style="font-size:11px;color:#888;">Cartão global não entregue</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Eng Ops orientou a <strong>abrir thread no #ext-nubank-wise-card-production</strong> com @tanya.singh para verificar status de entrega.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Entrega → escalada para Wise/Mobi.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12535" target="_blank">BUNOPS-12535</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[Detran] Comprovante<br><span style="font-size:11px;color:#888;">Cliente pagou 2x a mesma multa</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">In Progress</span></td>
+          <td style="font-size:12px;">Diego identificou que o cliente cadastrou a <strong>mesma placa em dois formatos</strong> (padrão antigo + Mercosul) e pagou a mesma multa duas vezes. Eng Ops em investigação.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Duplicação de placa — caso complexo com parceiro.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12538" target="_blank">BUNOPS-12538</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] UV sem acesso<br><span style="font-size:11px;color:#888;">Sem acesso a conta global - Valdemir</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">Pending</span></td>
+          <td style="font-size:12px;">Agente perguntou "temos visibilidade?" — sem análise de Eng Ops ainda. Ticket aguardando.</td>
+          <td style="font-size:11.5px;"><strong>Pendente</strong><br>Sem dados suficientes.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12546" target="_blank">BUNOPS-12546</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[Detran] Pagamento e liquidação<br><span style="font-size:11px;color:#888;">Pagamento do IPVA cancelado</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">In Progress</span></td>
+          <td style="font-size:12px;">Cliente recebeu <strong>estorno completo + 50% adicional</strong> (equivalente a 10% de desconto no IPVA). Eng Ops aguardando confirmação do cliente.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Estorno processado com bonificação.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12548" target="_blank">BUNOPS-12548</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] UV sem acesso<br><span style="font-size:11px;color:#888;">Cliente sem acesso à conta</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Sem comentários ainda. Aguardando análise.</td>
+          <td style="font-size:11.5px;"><strong>Pendente</strong></td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12557" target="_blank">BUNOPS-12557</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] UV sem acesso<br><span style="font-size:11px;color:#888;">Plano UV família sem acesso à CG</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Padrão de <strong>espaço família UV</strong> — elegibilidade pode ter delay de 1–2 dias após ingresso no plano. Possível evitável por orientação de CX.</td>
+          <td style="font-size:11.5px;"><span class="badge b-evitavel">Prov. Evitável</span><br>Delay espaço família — CX poderia orientar aguardar.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12564" target="_blank">BUNOPS-12564</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] Transações Cartão<br><span style="font-size:11px;color:#888;">Tentativa excedida — compra recusada</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Compra recusada USD 155,37 em Ross Stores — status "Recusado". Automação indica <strong>segunda via Wise</strong> (conf. 80%). Fluxo via Weduka existe.</td>
+          <td style="font-size:11.5px;"><span class="badge b-evitavel">Prov. Evitável</span><br>Wise 2nd level — fluxo disponível.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12578" target="_blank">BUNOPS-12578</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[Detran] Pagamento e liquidação<br><span style="font-size:11px;color:#888;">Pagamentos não compensados no Detran</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">Pending</span></td>
+          <td style="font-size:12px;">Diego confirmou que <strong>todos os pagamentos estão com status correto do lado Nu</strong>. Aguardando mais detalhes do parceiro Detran para verificar compensação.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Investigação com parceiro Detran.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12581" target="_blank">BUNOPS-12581</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] Transações Cartão<br><span style="font-size:11px;color:#888;">Senha com erro</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Automação indica <strong>segunda via Wise</strong> (conf. 85%). Padrão de tentativas excedidas de PIN — pode exigir reset por Eng Ops ou fluxo Wise.</td>
+          <td style="font-size:11.5px;"><strong>Pendente</strong><br>PIN block ou Wise 2nd — aguardando análise.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12588" target="_blank">BUNOPS-12588</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] UV sem acesso<br><span style="font-size:11px;color:#888;">Cliente deseja ter acesso à CG</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Sem comentários. Aguardando análise inicial.</td>
+          <td style="font-size:11.5px;"><strong>Pendente</strong></td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12596" target="_blank">BUNOPS-12596</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] Saldo e Conversão<br><span style="font-size:11px;color:#888;">Não consegue converter BRL → COP</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">App retorna "não foi possível, tente mais tarde". Pode ser intermitência ou <strong>moeda não suportada</strong> (peso colombiano). Aguardando análise.</td>
+          <td style="font-size:11.5px;"><strong>Pendente</strong><br>Verificar se COP é suportado ou se é intermitência.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12603" target="_blank">BUNOPS-12603</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[Detran] Pagamento e liquidação<br><span style="font-size:11px;color:#888;">Perdeu parcelamento + juros por pagamento cancelado</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Sem comentários ainda. Caso de <strong>pagamento cancelado gerando perda de parcelamento e cobrança de juros</strong> — requer investigação técnica com Detran.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Cancelamento indevido de parcela — escalada Detran.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12608" target="_blank">BUNOPS-12608</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[Detran] Pagamento e liquidação<br><span style="font-size:11px;color:#888;">Série de pagamentos de multas jan/fev não baixados</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Sem comentários. Múltiplos pagamentos processados corretamente no Nu mas não refletidos no Detran — padrão recorrente desta semana.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Compensação Detran — mesmo padrão 12578.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12611" target="_blank">BUNOPS-12611</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] UV sem acesso<br><span style="font-size:11px;color:#888;">Não consegue acesso à conta global</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Sem comentários. Aguardando análise.</td>
+          <td style="font-size:11.5px;"><strong>Pendente</strong></td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12624" target="_blank">BUNOPS-12624</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[E-sim] Compatibilidade<br><span style="font-size:11px;color:#888;">Não consegue ativar eSIM de viagem</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">In Progress</span></td>
+          <td style="font-size:12px;">Diego: <strong>"ocorrido muitos casos de o cliente tentar com o e-mail antigo em vez do novo"</strong> — orientou a seguir fluxo manual. Padrão recorrente de ativação por e-mail desatualizado.</td>
+          <td style="font-size:11.5px;"><span class="badge b-evitavel">Prov. Evitável</span><br>Orientação de uso — e-mail de ativação desatualizado.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12629" target="_blank">BUNOPS-12629</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>Deactivation report<br><span style="font-size:11px;color:#888;">[Superset] All Nubank deactivations</span></td>
+          <td><span class="badge b-tecnico">Técnico</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Lote de desativações Wise enviado em 19/03. Processamento manual via backend — padrão c7 recorrente (~4/mês). Candidato à automação (Ação v do plano).</td>
+          <td style="font-size:11.5px;"><strong>Técnico</strong><br>Deactivation report — automação prevista em jun/26.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12632" target="_blank">BUNOPS-12632</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] UV sem acesso<br><span style="font-size:11px;color:#888;">Conta Global com moeda cancelada</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Sem comentários. <strong>"Moeda cancelada"</strong> pode indicar entrypoints de moeda (USD/EUR) não removidos automaticamente — padrão T4 de c1.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Entry points não removidos pós-cancelamento.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12633" target="_blank">BUNOPS-12633</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] Transações Cartão<br><span style="font-size:11px;color:#888;">Saque com Conta Global</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Automação indica <strong>segunda via Wise</strong> (conf. 85%). Saques com problemas geralmente caem no fluxo Wise — CX poderia acionar via Weduka diretamente.</td>
+          <td style="font-size:11.5px;"><span class="badge b-evitavel">Prov. Evitável</span><br>Wise 2nd level — fluxo documentado.</td>
+        </tr>
+        <tr class="row-tratativa">
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12634" target="_blank">BUNOPS-12634</a><br><span class="badge b-tratativa">Em tratativa</span></td>
+          <td>[CG] UV sem acesso<br><span style="font-size:11px;color:#888;">Solicita reativação de conta global</span></td>
+          <td><span class="badge b-pendente">Pendente</span></td>
+          <td><span style="color:#e67e22;font-size:11px;">To Do</span></td>
+          <td style="font-size:12px;">Sem comentários. <strong>"Reativação de CG"</strong> — padrão T1 de c1 (CG cancelada sem self-service). Candidato à Ação vi do plano.</td>
+          <td style="font-size:11.5px;"><strong>Técnico (provável)</strong><br>Reativação CG cancelada — sub-padrão T1.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="insight-box">
+      <strong>💡 Padrões preliminares nos devidos desta semana</strong>
+      Detran domina com 5 tickets (compensação de pagamentos não refletidos — padrão recorrente com parceiro). UV sem acesso tem 7 em tratativa — 2 já sinalizam padrões conhecidos (delay espaço família, reativação T1). Pelo menos 4 tickets de transações/eSIM têm indicação de segunda via Wise (evitáveis). Análise completa disponível quando a semana fechar.
+    </div>
+  </div>
+
+  <!-- DEEP-DIVE INDEVIDOS -->
+  <div class="section">
+    <h2>3. Deep-Dive — Tickets Indevidos <span class="sec-badge">4 confirmados</span></h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;align-items:start;">
+      <div>
+        <table>
+          <thead><tr><th>Causa Raiz (1–8)</th><th>Qtd</th><th style="width:150px">%</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>3. Limitação de produto documentada</td>
+              <td><strong>1</strong></td>
+              <td><div class="pct-bar"><div class="pct-fill" style="width:50%"></div><span>25,0%</span></div></td>
+            </tr>
+            <tr>
+              <td>2. Canal errado — Wise CX</td>
+              <td><strong>1</strong></td>
+              <td><div class="pct-bar"><div class="pct-fill" style="width:50%"></div><span>25,0%</span></div></td>
+            </tr>
+            <tr>
+              <td>7. Processo interno ou SLA desconhecido</td>
+              <td><strong>1</strong></td>
+              <td><div class="pct-bar"><div class="pct-fill" style="width:50%"></div><span>25,0%</span></div></td>
+            </tr>
+            <tr>
+              <td>8. Ticket duplicado</td>
+              <td><strong>1</strong></td>
+              <td><div class="pct-bar"><div class="pct-fill" style="width:50%"></div><span>25,0%</span></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="insight-box" style="margin-top:12px;">
+          <strong>💡 Padrão da semana (indevidos)</strong>
+          Distribuição uniforme entre as 4 causas (25% cada). 1 ticket duplicado (nova Causa 8) — mesmo caso já em andamento, aberto novamente por outro agente. <strong>Limitação de produto</strong> (IOF 3,5% e eSIM) continua presente: comportamentos esperados que o CX deveria conhecer, reforçando Ação i do plano.
+        </div>
+      </div>
+      <div style="height:180px;"><canvas id="chartIndevidosPie"></canvas></div>
+    </div>
+
+    <!-- Tabela detalhada indevidos -->
+    <table>
+      <thead>
+        <tr>
+          <th>Ticket</th>
+          <th>Data</th>
+          <th>Reporter</th>
+          <th>RT</th>
+          <th>Causa Raiz</th>
+          <th>Observação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12527" target="_blank">BUNOPS-12527</a><br><span class="badge b-indevido">Won't Do</span></td>
+          <td>16/03</td>
+          <td>Gilvania Silva</td>
+          <td>[CG] Saldo e Conversão</td>
+          <td><strong>7. Processo/SLA desconhecido</strong></td>
+          <td style="font-size:12px;">Spread cobrado indevidamente. Eng Ops: <em>"para casos de spread é necessário solicitar a adição do cliente no rollout a partir da planilha, conforme orientado."</em> Processo documentado não seguido.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12533" target="_blank">BUNOPS-12533</a><br><span class="badge b-indevido">Won't Do</span></td>
+          <td>16/03</td>
+          <td>Larissa Cecconello</td>
+          <td>[CG] Transações Cartão</td>
+          <td><strong>2. Canal errado — Wise CX</strong></td>
+          <td style="font-size:12px;">Cliente tentava transação não suportada (pagamento p/ conta Wise). Eng Ops: <em>"pode abrir um ticket via segundo nível de atendimento para Wise para entender o motivo da recusa"</em> — canal Weduka existe e estava disponível.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12540" target="_blank">BUNOPS-12540</a><br><span class="badge b-indevido">Won't Do</span></td>
+          <td>16/03</td>
+          <td>Valeria Kaneda</td>
+          <td>[CG] UV sem acesso</td>
+          <td><strong>3. Limitação de produto documentada</strong></td>
+          <td style="font-size:12px;">Cliente fez downgrade do plano UV e não foi informado que perderia acesso à CG — transferiu dinheiro para a conta. Eng Ops sem ação: comportamento esperado do produto. Ticket duplicado de outro caso em andamento.</td>
+        </tr>
+        <tr>
+          <td><a href="https://nubank.atlassian.net/browse/BUNOPS-12541" target="_blank">BUNOPS-12541</a><br><span class="badge b-indevido">Won't Do</span></td>
+          <td>16/03</td>
+          <td>Ana Melo</td>
+          <td>[E-sim] Casos não resolvidos Gigs</td>
+          <td><strong>8. Ticket duplicado</strong></td>
+          <td style="font-size:12px;">Caso já registrado em outro ticket em andamento. Eng Ops identificou duplicidade nos comentários e encerrou sem ação adicional.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /page semana -->
+</div><!-- /tab-semana -->
+
+<!-- ══════════ TAB 2 — MENSAL + REPORTERS ══════════ -->
+<div id="tab-mensal" class="tab-page">
+<div class="page">
+
+  <div class="header">
+    <h1>Visão Mensal + Reporters &nbsp;|&nbsp; Março/2026</h1>
+    <div class="subtitle">Acumulado 01–19/03/2026 · <span>Eng Ops</span> · Atualizado em 19/03/2026</div>
+  </div>
+
+  <!-- VISÃO MENSAL -->
+  <div class="section">
+    <h2>1. Visão Mensal — Dez/2025 a Mar/2026</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <h3>Volume total — devidos · indevidos · em tratativa</h3>
+        <div class="chart-canvas"><canvas id="chartMonthlyBar"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>% indevidos confirmados por mês</h3>
+        <div class="chart-canvas"><canvas id="chartMonthlyLine"></canvas></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;">
+      <table>
+        <thead>
+          <tr><th>Mês</th><th style="text-align:center">Total</th><th style="text-align:center">Devidos</th><th style="text-align:center">Indevidos</th><th style="text-align:center">Em tratativa</th><th style="text-align:center">% indevidos</th><th>Observação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dezembro/25*</td><td style="text-align:center">103</td><td style="text-align:center">102</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">1,0%</td><td style="font-size:11px;color:#888;">NO ENG OPS não usado ativamente</td></tr>
+          <tr><td>Janeiro/26*</td><td style="text-align:center">93</td><td style="text-align:center">88</td><td style="text-align:center">5</td><td style="text-align:center">0</td><td style="text-align:center">5,4%</td><td style="font-size:11px;color:#888;">Monitoramento parcial</td></tr>
+          <tr><td>Fevereiro/26</td><td style="text-align:center">99</td><td style="text-align:center">69</td><td style="text-align:center">30</td><td style="text-align:center">0</td><td style="text-align:center">30,3%</td><td style="font-size:11px;color:#888;">Referência base</td></tr>
+          <tr style="background:#fffef5;"><td>Março/26 <span class="tag-tratativa">parcial 01–19/03</span></td><td style="text-align:center;font-weight:700;">84</td><td style="text-align:center;font-weight:700;">31</td><td style="text-align:center;font-weight:700;">26</td><td style="text-align:center;font-weight:700;color:#e67e22;">27</td><td style="text-align:center;font-weight:700;">31,0%</td><td style="font-size:11px;color:#888;">27 em tratativa ainda sem classif.</td></tr>
+        </tbody>
+      </table>
+      <div class="insight-box">
+        <strong>Tendência março</strong>
+        Com 84 tickets em 19 dias, março já está em ritmo de ~133 tickets no mês (vs. ~98/mês de média). A taxa de indevidos confirmados (31,0%) está em linha com fevereiro. Os 27 tickets em tratativa vão redistribuir a proporção devidos/indevidos à medida que forem resolvidos — taxa final de março pode subir.
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORTERS -->
+  <div class="section">
+    <h2>2. Reporters — Indevidos Acumulado Março/2026 <span class="acc-badge">01–19/03 · 3ª semana</span></h2>
+    <p style="font-size:12px;color:#888;margin-bottom:16px;">
+      26 indevidos confirmados em 19 dias · 21 reporters distintos · Reporters com <span class="badge-new">novo</span> apareceram pela primeira vez esta semana (15–19/03).
+    </p>
+    <div class="two-col">
+      <div>
+        <div class="chart-box">
+          <h3>Reporters com mais escalamentos indevidos — março/26</h3>
+          <div style="position:relative;height:340px;"><canvas id="chartReporters"></canvas></div>
+        </div>
+      </div>
+      <div>
+        <table>
+          <thead><tr><th>Reporter</th><th>Tickets</th><th>Principais causas</th></tr></thead>
+          <tbody>
+            <tr><td>Caio Veronesi</td><td>2</td><td>Canal errado — #core-identity-helpdesk</td></tr>
+            <tr><td>Bruna Diniz</td><td>2</td><td>SLA desconhecido + Auto-resolvido</td></tr>
+            <tr><td>Samara Souza</td><td>2</td><td>Fila errada — Detran</td></tr>
+            <tr><td>Camila Lumonde</td><td>2</td><td>Auto-resolvido (PIN — duplicados)</td></tr>
+            <tr><td>Valeria Kaneda</td><td>2</td><td>Verificação prévia + Limitação produto</td></tr>
+            <tr><td>Flávia Góes</td><td>1</td><td>Limitação de produto</td></tr>
+            <tr><td>Reuel Passos</td><td>1</td><td>Canal errado — #core-identity-helpdesk</td></tr>
+            <tr><td>Ricardo Ramalho</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Kátia Gouvea</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Fabiana Saraiva</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Helen Cologis</td><td>1</td><td>Canal errado — IR/Tax</td></tr>
+            <tr><td>Liliane Oliveira</td><td>1</td><td>Responsabilidade Wise</td></tr>
+            <tr><td>Bárbara Diniz</td><td>1</td><td>Canal de acionamento (Wise)</td></tr>
+            <tr><td>Isabelle Santos</td><td>1</td><td>Canal de acionamento (Wise)</td></tr>
+            <tr><td>Ana Carvalho</td><td>1</td><td>SLA desconhecido</td></tr>
+            <tr><td>Aline Santos</td><td>1</td><td>SLA desconhecido</td></tr>
+            <tr><td>Marcela Varjão</td><td>1</td><td>Limitação produto (IOF)</td></tr>
+            <tr><td>Beatriz Araujo</td><td>1</td><td>Canal errado — #core-identity-helpdesk</td></tr>
+            <tr><td>Gilvania Silva <span class="badge-new">novo</span></td><td>1</td><td>Processo/SLA — planilha spread</td></tr>
+            <tr><td>Larissa Cecconello <span class="badge-new">novo</span></td><td>1</td><td>Canal errado — Wise CX</td></tr>
+            <tr><td>Ana Melo <span class="badge-new">novo</span></td><td>1</td><td>Limitação produto (eSIM)</td></tr>
+          </tbody>
+        </table>
+        <div class="insight-box" style="margin-top:12px;">
+          <strong>Insight reporters — março acumulado</strong>
+          21 reporters distintos para 26 indevidos — distribuição ampla indica problema sistêmico de conhecimento, não concentrado em agentes específicos. 5 reporters com 2 ocorrências cada. Os 3 novos desta semana (Gilvania, Larissa, Ana Melo) apresentaram causas já conhecidas: planilha spread, Wise CX e limitação de produto — todas endereçadas pelo material de treinamento.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page mensal -->
+</div><!-- /tab-mensal -->
+
+<!-- ══════════ TAB 3 — SLA ══════════ -->
+<div id="tab-sla" class="tab-page">
+<div class="page">
+
+  <div class="header">
+    <h1>SLA — Tempo de Resolução &nbsp;|&nbsp; Últimas 4 Semanas</h1>
+    <div class="subtitle">Cálculo: <code>resolutiondate − created</code> · Apenas tickets finalizados · <span>Eng Ops · BU Affluents</span></div>
+  </div>
+
+  <div class="metodo-note">
+    <strong>Metodologia:</strong> SLA calculado como tempo corrido (calendar time) desde a abertura até a resolução do ticket, agrupado pela semana de resolução.
+    <strong>Mediana</strong> = comportamento típico (50% dos tickets resolvidos abaixo desse valor) ·
+    <strong>P90</strong> = limite da cauda longa (90% dos tickets resolvidos abaixo desse valor).
+    Semanas com <strong>n &lt; 10</strong> têm P90 pouco confiável — indicadas com *.
+  </div>
+
+  <!-- CARDS SEMANA ATUAL -->
+  <div class="cards" style="grid-template-columns: repeat(4,1fr);">
+    <div class="card">
+      <div class="value" style="color:#5A1E82;">4,7h</div>
+      <div class="label">Mediana geral</div>
+      <div class="sub">semana 15–21/03* · n=5</div>
+    </div>
+    <div class="card">
+      <div class="value" style="color:#5A1E82;">47,3h</div>
+      <div class="label">P90 geral</div>
+      <div class="sub">n&lt;10 — referência limitada</div>
+    </div>
+    <div class="card c-devidos">
+      <div class="value" style="color:#388E3C;">18,8h</div>
+      <div class="label">Mediana devidos</div>
+      <div class="sub">n=1 — apenas 1 ticket</div>
+    </div>
+    <div class="card c-indevidos">
+      <div class="value" style="color:#E53935;">3,2h</div>
+      <div class="label">Mediana indevidos</div>
+      <div class="sub">semana 15–21/03* · n=4</div>
+    </div>
+  </div>
+
+  <!-- GRÁFICOS -->
+  <div class="section">
+    <h2>1. Evolução Semanal — Mediana de Resolução</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <h3>Mediana por categoria (horas)</h3>
+        <div class="chart-canvas" style="height:230px;"><canvas id="chartSlaMediana"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>P90 geral (horas)</h3>
+        <div class="chart-canvas" style="height:230px;"><canvas id="chartSlaP90"></canvas></div>
+      </div>
+    </div>
+    <div class="period-note">22/02–28/02 | 01/03–07/03 | 08/03–14/03 | 15/03–21/03* &nbsp;·&nbsp; *Prévia parcial — n=5, valores sujeitos a alteração</div>
+  </div>
+
+  <!-- TABELA RESUMO -->
+  <div class="section">
+    <h2>2. Tabela Resumo por Semana</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th style="text-align:center">n total</th>
+          <th style="text-align:center">Mediana geral</th>
+          <th style="text-align:center">P90 geral</th>
+          <th style="text-align:center">n devidos</th>
+          <th style="text-align:center">Mediana devidos</th>
+          <th style="text-align:center">P90 devidos</th>
+          <th style="text-align:center">n indevidos</th>
+          <th style="text-align:center">Mediana indevidos</th>
+          <th style="text-align:center">P90 indevidos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>22/02–28/02</td>
+          <td style="text-align:center">47</td>
+          <td style="text-align:center"><strong>128,7h</strong><br><span style="font-size:10px;color:#888;">~5,4 dias</span></td>
+          <td style="text-align:center">338,1h</td>
+          <td style="text-align:center">23</td>
+          <td style="text-align:center">193,8h</td>
+          <td style="text-align:center">340,1h</td>
+          <td style="text-align:center">24</td>
+          <td style="text-align:center">63,2h</td>
+          <td style="text-align:center">194,1h</td>
+        </tr>
+        <tr>
+          <td>01/03–07/03</td>
+          <td style="text-align:center">22</td>
+          <td style="text-align:center"><strong>39,9h</strong><br><span style="font-size:10px;color:#888;">~1,7 dias</span></td>
+          <td style="text-align:center">134,6h</td>
+          <td style="text-align:center">10</td>
+          <td style="text-align:center">62,1h</td>
+          <td style="text-align:center">139,1h</td>
+          <td style="text-align:center">12</td>
+          <td style="text-align:center">39,9h</td>
+          <td style="text-align:center">100,4h</td>
+        </tr>
+        <tr>
+          <td>08/03–14/03</td>
+          <td style="text-align:center">35</td>
+          <td style="text-align:center"><strong>40,4h</strong><br><span style="font-size:10px;color:#888;">~1,7 dias</span></td>
+          <td style="text-align:center"><span title="outlier: 1 ticket aberto há 75 dias" style="cursor:help;border-bottom:1px dashed #aaa;">411,2h ⚠️</span></td>
+          <td style="text-align:center">21</td>
+          <td style="text-align:center">22,9h</td>
+          <td style="text-align:center"><span title="influenciado por ticket de 75 dias" style="cursor:help;border-bottom:1px dashed #aaa;">579,3h ⚠️</span></td>
+          <td style="text-align:center">14</td>
+          <td style="text-align:center">48,9h</td>
+          <td style="text-align:center">215,5h</td>
+        </tr>
+        <tr style="background:#fffef5;">
+          <td>15/03–21/03 <span class="tag-tratativa">parcial</span></td>
+          <td style="text-align:center">5*</td>
+          <td style="text-align:center"><strong>4,7h</strong></td>
+          <td style="text-align:center">47,3h*</td>
+          <td style="text-align:center">1*</td>
+          <td style="text-align:center">18,8h*</td>
+          <td style="text-align:center">—</td>
+          <td style="text-align:center">4*</td>
+          <td style="text-align:center">3,2h*</td>
+          <td style="text-align:center">47,8h*</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="insight-box" style="margin-top:14px;">
+      <strong>⚠️ Atenção — outliers P90 semana 08/03</strong>
+      O P90 de 411h da semana 08/03 é influenciado por pelo menos 1 ticket com ~1.800h de resolução (aberto ~75 dias antes). A mediana (40,4h) representa melhor o comportamento real do time. Tickets com SLA muito alto provavelmente ficaram parados aguardando resposta de parceiro (Wise, Gigs, Detran) — vale investigar separadamente.
+    </div>
+  </div>
+
+</div><!-- /page sla -->
+</div><!-- /tab-sla -->
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const labelPlugin = {
+  id: 'datalabels',
+  afterDatasetsDraw(chart) {
+    const ctx = chart.ctx;
+    chart.data.datasets.forEach((ds, i) => {
+      const meta = chart.getDatasetMeta(i);
+      if (meta.type === 'bar') {
+        const isStacked = chart.options.scales?.y?.stacked;
+        const isLastDataset = i === chart.data.datasets.length - 1;
+        const horizontal = chart.options.indexAxis === 'y';
+        const labelSuffix = ds.labelSuffix !== undefined ? ds.labelSuffix : '';
+        meta.data.forEach((bar, idx) => {
+          ctx.font = 'bold 11px Segoe UI, Arial, sans-serif';
+          if (isStacked && !horizontal) {
+            const segHeight = Math.abs(bar.base - bar.y);
+            const centerY = (bar.y + bar.base) / 2;
+            if (segHeight >= 14) {
+              ctx.fillStyle = 'white';
+              ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+              ctx.fillText(ds.data[idx], bar.x, centerY);
+            }
+            if (isLastDataset) {
+              const total = chart.data.datasets.reduce((s, d) => s + (d.data[idx] || 0), 0);
+              ctx.fillStyle = '#3a3a3a'; ctx.font = 'bold 12px Segoe UI, Arial, sans-serif';
+              ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+              ctx.fillText(total, bar.x, bar.y - 6);
+            }
+          } else if (horizontal) {
+            ctx.fillStyle = '#3a3a3a'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+            ctx.fillText(ds.data[idx] + labelSuffix, bar.x + 6, bar.y);
+          } else {
+            // non-stacked vertical bar — label above
+            ctx.fillStyle = '#3a3a3a'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+            ctx.fillText(ds.data[idx] + labelSuffix, bar.x, bar.y - 6);
+          }
+        });
+      }
+      if (meta.type === 'line') {
+        const labelSuffix = ds.labelSuffix !== undefined ? ds.labelSuffix : '%';
+        meta.data.forEach((pt, idx) => {
+          ctx.fillStyle = '#7B4FA6'; ctx.font = 'bold 11px Segoe UI, Arial, sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+          ctx.fillText(ds.data[idx] + labelSuffix, pt.x, pt.y - 10);
+        });
+      }
+    });
+  }
+};
+Chart.register(labelPlugin);
+
+// Trend bar — 4 weeks
+new Chart(document.getElementById('chartBar'), {
+  type: 'bar',
+  data: {
+    labels: ['22/02–28/02', '01/03–07/03', '08/03–14/03', '15/03–21/03*'],
+    datasets: [
+      { label: 'Devidos', data: [12, 14, 16, 1], backgroundColor: '#4CAF50', borderRadius: 0 },
+      { label: 'Indevidos', data: [12, 11, 11, 4], backgroundColor: '#E53935', borderRadius: 0 },
+      { label: 'Em tratativa', data: [0, 0, 8, 19], backgroundColor: '#FFB74D', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, layout: { padding: { top: 24 } },
+    plugins: { legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } } },
+    scales: {
+      y: { stacked: true, beginAtZero: true, max: 44, ticks: { stepSize: 4, font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+      x: { stacked: true, ticks: { font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Trend line — % indevidos
+new Chart(document.getElementById('chartLine'), {
+  type: 'line',
+  data: {
+    labels: ['22/02–28/02', '01/03–07/03', '08/03–14/03', '15/03–21/03*'],
+    datasets: [{
+      data: [50.0, 44.0, 31.4, 16.7],
+      borderColor: '#7B4FA6', backgroundColor: 'rgba(123,79,166,.1)',
+      tension: .4, fill: true, pointBackgroundColor: '#7B4FA6', pointRadius: 5,
+      borderDash: [0, 0, 0, 5]
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } },
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 65, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+      x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// RT donut
+new Chart(document.getElementById('chartRTDonuts'), {
+  type: 'doughnut',
+  data: {
+    labels: ['UV sem acesso', 'Detran', 'Transações', 'Outros'],
+    datasets: [{ data: [7, 5, 3, 5], backgroundColor: ['#9C5FB5', '#5A1E82', '#C4A8E0', '#E0C8FF'], borderWidth: 2, borderColor: 'white' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } } }
+  }
+});
+
+// Indevidos pie
+new Chart(document.getElementById('chartIndevidosPie'), {
+  type: 'doughnut',
+  data: {
+    labels: ['3. Limitação produto', '2. Canal errado Wise', '7. Processo/SLA', '8. Ticket duplicado'],
+    datasets: [{ data: [1, 1, 1, 1], backgroundColor: ['#F9A825', '#C62828', '#5A1E82', '#78909C'], borderWidth: 2, borderColor: 'white' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } } }
+  }
+});
+
+// Monthly bar
+new Chart(document.getElementById('chartMonthlyBar'), {
+  type: 'bar',
+  data: {
+    labels: ['Dezembro*', 'Janeiro*', 'Fevereiro', 'Março†'],
+    datasets: [
+      { label: 'Devidos', data: [102, 88, 69, 31], backgroundColor: '#4CAF50', borderRadius: 0 },
+      { label: 'Indevidos', data: [1, 5, 30, 26], backgroundColor: '#E53935', borderRadius: 0 },
+      { label: 'Em tratativa', data: [0, 0, 0, 27], backgroundColor: '#FFB74D', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, layout: { padding: { top: 24 } },
+    plugins: { legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } } },
+    scales: {
+      y: { stacked: true, beginAtZero: true, max: 120, ticks: { stepSize: 20, font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+      x: { stacked: true, ticks: { font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Monthly line
+new Chart(document.getElementById('chartMonthlyLine'), {
+  type: 'line',
+  data: {
+    labels: ['Dezembro*', 'Janeiro*', 'Fevereiro', 'Março†'],
+    datasets: [{
+      data: [1.0, 5.4, 30.3, 31.0],
+      borderColor: '#7B4FA6', backgroundColor: 'rgba(123,79,166,.1)',
+      tension: .4, fill: true, pointBackgroundColor: '#7B4FA6', pointRadius: 5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } },
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 45, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+      x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// SLA — Mediana por categoria
+new Chart(document.getElementById('chartSlaMediana'), {
+  type: 'line',
+  data: {
+    labels: ['22/02–28/02', '01/03–07/03', '08/03–14/03', '15/03–21/03*'],
+    datasets: [
+      { label: 'Geral',      data: [128.7, 39.9, 40.4, 4.7],  borderColor: '#7B4FA6', backgroundColor: 'rgba(123,79,166,.08)', tension: .3, fill: false, pointBackgroundColor: '#7B4FA6', pointRadius: 5, borderWidth: 2, labelSuffix: 'h' },
+      { label: 'Devidos',    data: [193.8, 62.1, 22.9, 18.8], borderColor: '#4CAF50', backgroundColor: 'rgba(76,175,80,.08)',  tension: .3, fill: false, pointBackgroundColor: '#4CAF50', pointRadius: 5, borderWidth: 2, labelSuffix: 'h' },
+      { label: 'Indevidos',  data: [63.2,  39.9, 48.9, 3.2],  borderColor: '#E53935', backgroundColor: 'rgba(229,57,53,.08)', tension: .3, fill: false, pointBackgroundColor: '#E53935', pointRadius: 5, borderWidth: 2, labelSuffix: 'h' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, layout: { padding: { top: 16 } },
+    plugins: { legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => v + 'h', font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+      x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+    }
+  }
+});
+
+// SLA — P90 geral
+new Chart(document.getElementById('chartSlaP90'), {
+  type: 'bar',
+  data: {
+    labels: ['22/02–28/02', '01/03–07/03', '08/03–14/03', '15/03–21/03*'],
+    datasets: [{
+      label: 'P90 geral',
+      data: [338.1, 134.6, 411.2, 47.3],
+      backgroundColor: ['#C4A8E0', '#C4A8E0', '#FFCDD2', '#FFE082'],
+      borderRadius: 4, labelSuffix: 'h'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, layout: { padding: { top: 28 } },
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.y + 'h' } }
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => v + 'h', font: { size: 11 } }, grid: { color: '#f0eaf8' } },
+      x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Reporters
+new Chart(document.getElementById('chartReporters'), {
+  type: 'bar',
+  data: {
+    labels: ['Caio Veronesi','Bruna Diniz','Samara Souza','Camila Lumonde','Valeria Kaneda','Flávia Góes','Reuel Passos','Ricardo Ramalho','Kátia Gouvea','Fabiana Saraiva','Helen Cologis','Liliane Oliveira','Bárbara Diniz','Isabelle Santos','Ana Carvalho','Aline Santos','Marcela Varjão','Beatriz Araujo','Gilvania Silva','Larissa Cecconello','Ana Melo'],
+    datasets: [{ data: [2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], backgroundColor: '#7B4FA6', borderRadius: 3 }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { right: 30 } },
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, max: 4, ticks: { stepSize: 1, font: { size: 10 } }, grid: { color: '#f0eaf8' } },
+      y: { ticks: { font: { size: 10 } }, grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
