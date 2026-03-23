@@ -120,7 +120,7 @@ tr:hover td{background:#faf6ff}.row-tratativa td{background:#fffef8!important}
   </div>
   <div class="table-wrap"><table>
     <thead><tr><th>Mês</th><th>Devidos</th><th>Indevidos</th><th>Em tratativa</th><th>Total</th><th>% Indevidos</th><th>Mediana SLA</th></tr></thead>
-    <tbody><tr><td>Dez/2025</td><td>83</td><td style='color:#E53935;font-weight:700'>17</td><td style='color:#e67e22'>0</td><td><strong>100</strong></td><td style='color:#E53935;font-weight:700'>17.0%</td><td>51.9h</td></tr><tr><td>Jan/2026</td><td>76</td><td style='color:#E53935;font-weight:700'>18</td><td style='color:#e67e22'>0</td><td><strong>94</strong></td><td style='color:#E53935;font-weight:700'>19.1%</td><td>71.1h</td></tr><tr><td>Fev/2026</td><td>56</td><td style='color:#E53935;font-weight:700'>43</td><td style='color:#e67e22'>0</td><td><strong>99</strong></td><td style='color:#E53935;font-weight:700'>43.4%</td><td>65.9h</td></tr><tr><td>Mar/2026 ⚠️</td><td>31</td><td style='color:#E53935;font-weight:700'>35</td><td style='color:#e67e22'>34</td><td><strong>100</strong></td><td style='color:#E53935;font-weight:700'>35.0%</td><td>40.4h</td></tr></tbody>
+    <tbody><tr><td>Dez/2025</td><td>84</td><td style='color:#E53935;font-weight:700'>18</td><td style='color:#e67e22'>0</td><td><strong>102</strong></td><td style='color:#E53935;font-weight:700'>17.6%</td><td>51.9h</td></tr><tr><td>Jan/2026</td><td>75</td><td style='color:#E53935;font-weight:700'>18</td><td style='color:#e67e22'>0</td><td><strong>93</strong></td><td style='color:#E53935;font-weight:700'>19.4%</td><td>71.1h</td></tr><tr><td>Fev/2026</td><td>57</td><td style='color:#E53935;font-weight:700'>42</td><td style='color:#e67e22'>0</td><td><strong>99</strong></td><td style='color:#E53935;font-weight:700'>42.4%</td><td>65.9h</td></tr><tr><td>Mar/2026 ⚠️</td><td>31</td><td style='color:#E53935;font-weight:700'>35</td><td style='color:#e67e22'>34</td><td><strong>100</strong></td><td style='color:#E53935;font-weight:700'>35.0%</td><td>40.4h</td></tr></tbody>
   </table></div>
   <div class="insight-box">💡 Pico em Fev/26 (43.4%). Tendência de queda nas semanas recentes de março: 66.7% → 57.1% → 33.3% → 21.9%.</div>
 
@@ -254,15 +254,15 @@ new Chart(document.getElementById('chartIndevWeekly'),{type:'bar',
 // 6. Monthly stacked
 new Chart(document.getElementById('chartMBar'),{type:'bar',
   data:{labels:['Dez/25','Jan/26','Fev/26','Mar/26 ⚠️'],datasets:[
-    {label:'Devidos',data:[83,76,56,31],backgroundColor:CLF.dev},
-    {label:'Indevidos',data:[17,18,43,35],backgroundColor:CLF.ind},
+    {label:'Devidos',data:[84,75,57,31],backgroundColor:CLF.dev},
+    {label:'Indevidos',data:[18,18,42,35],backgroundColor:CLF.ind},
     {label:'Em tratativa',data:[0,0,0,34],backgroundColor:CLF.trt},
-  ]},options:stackedOpts([100,94,99,100])
+  ]},options:stackedOpts([102,93,99,100])
 });
 
 // 7. Monthly % line
 new Chart(document.getElementById('chartMLine'),{type:'line',
-  data:{labels:['Dez/25','Jan/26','Fev/26','Mar/26 ⚠️'],datasets:[{label:'% Indevidos',data:[17.0,19.1,43.4,35.0],borderColor:CLF.ind,backgroundColor:'rgba(229,57,53,0.1)',tension:0.3,fill:true,pointRadius:5}]},
+  data:{labels:['Dez/25','Jan/26','Fev/26','Mar/26 ⚠️'],datasets:[{label:'% Indevidos',data:[17.6,19.4,42.4,35.0],borderColor:CLF.ind,backgroundColor:'rgba(229,57,53,0.1)',fill:true,tension:0.3,pointRadius:5}]},
   options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}},
     plugins:{legend:{position:'bottom',labels:{font:{size:11}}},datalabels:{align:'top',anchor:'top',color:CLF.ind,font:{weight:'bold',size:11},formatter:v=>v+'%'}}
   }
