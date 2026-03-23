@@ -20,10 +20,15 @@ body {
   box-shadow: 0 2px 10px rgba(0,0,0,.25);
 }
 .nav-brand { font-size: 12.5px; font-weight: 700; color: #E0C8FF; padding: 13px 18px 13px 0; border-right: 1px solid rgba(255,255,255,.15); margin-right: 6px; white-space: nowrap; }
-.top-nav a { color: rgba(255,255,255,.7); text-decoration: none; font-size: 12px; padding: 13px 12px; display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: color .15s; }
-.top-nav a:hover { color: white; }
+.tab-btn { background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: rgba(255,255,255,.65); font-size: 12px; padding: 13px 14px; display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: color .15s; font-family: inherit; }
+.tab-btn:hover { color: white; }
+.tab-btn.active { color: white; border-bottom-color: #C4A8E0; }
 .nd { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .nd-p { background: #C4A8E0; } .nd-r { background: #C62828; } .nd-g { background: #2E7D32; } .nd-o { background: #E65100; }
+
+/* ─── TABS ─── */
+.tab-page { display: none; }
+.tab-page.active { display: block; }
 
 /* ─── LAYOUT ─── */
 .page-header { padding: 24px 36px 16px; }
@@ -61,6 +66,17 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 .br { background: #fce4e4; color: #C62828; } .bg { background: #e4f4e4; color: #2E7D32; }
 .bo { background: #fff3e0; color: #E65100; } .bgy { background: #f0f0f0; color: #666; }
 
+/* ─── PRIORITY BADGES ─── */
+.pri { display: inline-block; border-radius: 8px; padding: 2px 8px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.pri-high { background: #fce4e4; color: #C62828; }
+.pri-mid  { background: #fff3e0; color: #E65100; }
+.pri-low  { background: #e8f5e9; color: #2E7D32; }
+
+/* ─── FASE LABELS ─── */
+.fase-label { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; border-radius: 7px; padding: 3px 9px; white-space: nowrap; }
+.fase1 { background: #fff0f0; color: #C62828; border: 1.5px solid #f5c0c0; }
+.fase2 { background: #f0fff4; color: #2E7D32; border: 1.5px solid #a5d6a7; }
+
 /* ─── INSIGHT ─── */
 .insight { background: linear-gradient(135deg, #f3e8ff, #ede7f6); border-left: 4px solid #7B4FA6; border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; line-height: 1.6; color: #3b1066; margin-top: 16px; }
 .insight.green { background: linear-gradient(135deg, #f0fff4, #e8f5e9); border-left-color: #2E7D32; }
@@ -71,12 +87,13 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 /* ─── PATTERN CARDS ─── */
 .pcard { border: 1px solid #e0d0f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; position: relative; }
 .pcard .pct { position: absolute; top: 12px; right: 12px; font-size: 18px; font-weight: 700; color: #5A1E82; }
-.ptitle { font-weight: 700; font-size: 13px; color: #3b1066; margin-bottom: 4px; padding-right: 52px; }
+.ptitle { font-weight: 700; font-size: 13px; color: #3b1066; margin-bottom: 4px; }
 .pbody { font-size: 12px; color: #555; line-height: 1.5; }
 .pcard.p1 { border-left: 4px solid #C62828; } .pcard.p2 { border-left: 4px solid #E65100; }
 .pcard.p3 { border-left: 4px solid #F9A825; } .pcard.p4 { border-left: 4px solid #7B4FA6; }
-.pcard.p5 { border-left: 4px solid #5A1E82; } .pcard.p6 { border-left: 4px solid #0277BD; }
-.pcard.p7 { border-left: 4px solid #bbb; }
+.pcard.p5 { border-left: 4px solid #5A1E82; }
+.pcard.p6 { border-left: 4px solid #1565C0; }
+.pcard.p7 { border-left: 4px solid #00695C; }
 .tsm { font-size: 11px; color: #999; margin-top: 4px; }
 
 /* ─── ACTION ITEMS ─── */
@@ -89,11 +106,31 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 /* ─── FOOTER NOTE ─── */
 .fnote { font-size: 10px; color: #bbb; line-height: 1.7; margin-top: 10px; }
 
+/* ────────────────────────────────
+   GANTT / ROADMAP
+──────────────────────────────── */
+.gantt-wrap { overflow-x: auto; }
+.gantt-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 700px; }
+.gantt-table th { background: #f0e8f8; color: #3b1066; font-weight: 700; padding: 8px 10px; text-align: center; border: 1px solid #e0d0f0; }
+.gantt-table th.row-hd { text-align: left; min-width: 200px; }
+.gantt-table td { padding: 6px 8px; border: 1px solid #e8e0f4; vertical-align: middle; text-align: center; font-size: 11px; }
+.gantt-table td.row-hd { text-align: left; font-weight: 600; font-size: 12px; background: #faf5ff; padding: 6px 12px; }
+.gc-empty  { background: #fafafa; color: #bbb; }
+.gc-prep   { background: #f3e8ff; color: #7B4FA6; font-weight: 600; }
+.gc-ramp1  { background: #ffe0b2; color: #E65100; font-weight: 600; }
+.gc-ramp2  { background: #ffcc80; color: #BF360C; font-weight: 700; }
+.gc-full   { background: #a5d6a7; color: #1B5E20; font-weight: 700; }
+.gc-build  { background: #bbdefb; color: #0D47A1; font-weight: 600; }
+.gc-active { background: #c8e6c9; color: #1B5E20; font-weight: 700; }
+.gc-passive{ background: #f5f5f5; color: #888; }
+.gc-impact { background: #3b1066; color: white; font-weight: 800; font-size: 13px; }
+.gantt-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
+.gl-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #555; }
+.gl-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
 /* ════════════════════════════
    TREE STYLES
 ════════════════════════════ */
-
-/* Legend */
 .legend { display: flex; gap: 22px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
 .leg-item { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: #555; }
 .leg-dot { width: 13px; height: 13px; border-radius: 3px; border: 2px solid; flex-shrink: 0; }
@@ -101,60 +138,15 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 .lr { border-color: #C62828; background: #fff0f0; border-style: dashed; }
 .lg { border-color: #2E7D32; background: #f0fff4; border-style: dashed; }
 
-/* Tree scroll wrapper */
-.tree-scroll {
-  width: 100%;
-  overflow-x: auto;
-}
-
-/* Tree container */
-.tree-container {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 60px 24px;
-  min-width: fit-content;
-}
-#svg-lines {
-  position: absolute;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
-}
-
-/* Subtree */
-.subtree {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-/* Children row */
-.t-children {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 60px;
-  margin-top: 44px;
-}
+.tree-scroll { width: 100%; overflow-x: auto; }
+.tree-container { position: relative; display: inline-flex; flex-direction: column; align-items: center; padding: 16px 60px 24px; min-width: fit-content; }
+#svg-lines { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 0; overflow: visible; }
+.subtree { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.t-children { display: flex; flex-direction: row; align-items: flex-start; justify-content: center; gap: 60px; margin-top: 44px; }
 .t-children.tight { gap: 8px; }
 .t-children.wide  { gap: 80px; }
 
-/* Base node */
-.node {
-  background: white;
-  border: 2px solid #C4A8E0;
-  border-radius: 11px;
-  padding: 13px 16px;
-  box-shadow: 0 2px 8px rgba(90,30,130,0.08);
-  position: relative;
-  flex-shrink: 0;
-}
+.node { background: white; border: 2px solid #C4A8E0; border-radius: 11px; padding: 13px 16px; box-shadow: 0 2px 8px rgba(90,30,130,0.08); position: relative; flex-shrink: 0; }
 .node .n-tag  { font-size: 9.5px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
 .node .n-title{ font-size: 13px; font-weight: 700; color: #3b1066; margin-bottom: 3px; }
 .node .n-num  { font-size: 28px; font-weight: 800; color: #5A1E82; line-height: 1; margin-bottom: 1px; }
@@ -165,27 +157,20 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 .chip  { font-size: 9.5px; background: #f3eaff; color: #6A2B9A; padding: 2px 7px; border-radius: 7px; }
 .chip.g{ background: #f0f0f0; color: #777; }
 
-/* Focus styles */
 .focus1 { border: 2.5px dashed #C62828 !important; background: #fff8f8 !important; box-shadow: 0 0 0 3px #ffeaea, 0 2px 8px rgba(198,40,40,.1) !important; }
 .focus2 { border: 2.5px dashed #2E7D32 !important; background: #f6fff6 !important; box-shadow: 0 0 0 3px #c8e6c9, 0 2px 8px rgba(46,125,50,.1) !important; }
 .focus-badge { position: absolute; top: -11px; left: 12px; font-size: 9.5px; font-weight: 800; padding: 2px 8px; border-radius: 7px; white-space: nowrap; }
 .fb-red   { background: #C62828; color: white; }
 .fb-green { background: #2E7D32; color: white; }
 
-/* L1 BUNOPS */
 #n-bunops { width: 230px; background: linear-gradient(150deg, #f3e8ff, #ede7f6) !important; border-color: #9C5FB5 !important; }
 #n-bunops .n-num { color: #3b1066; }
-
-/* L2 */
 #n-mobility { width: 220px; background: linear-gradient(150deg, #faf5ff, #f4ecff) !important; }
 #n-outras   { width: 210px; opacity: .5; }
 #n-outras .n-num { color: #bbb; }
-
-/* L3 */
 #n-devidos   { width: 210px; } #n-devidos .n-num   { color: #2E7D32; }
 #n-indevidos { width: 210px; } #n-indevidos .n-num { color: #C62828; }
 
-/* L4 Category nodes (Devidos) */
 .cat-node { width: 140px; border-color: #ddd !important; box-shadow: 0 1px 4px rgba(0,0,0,.06) !important; }
 .cat-node .n-title { font-size: 11px; } .cat-node .n-tag { font-size: 9px; color: #9C5FB5; }
 .cat-node .n-num   { font-size: 20px; } .cat-node .n-sub { font-size: 9.5px; margin-bottom: 3px; }
@@ -194,22 +179,20 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 .ind { font-size: 9.5px; margin-top: 3px; color: #C62828; }
 .ind.ok { color: #2E7D32; }
 
-/* L4 Pattern nodes (Indevidos) */
 .pat-node { width: 130px; border-color: #fcc !important; background: #fffafa !important; box-shadow: 0 1px 4px rgba(198,40,40,.07) !important; }
-.pat-node .n-title { font-size: 10.5px; }
+.pat-node .n-title { font-size: 11px; }
 .pat-node .n-tag   { font-size: 9px; color: #C62828; }
-.pat-node .n-num   { font-size: 18px; color: #C62828; }
-.pat-node .n-sub   { font-size: 9px; margin-bottom: 3px; }
+.pat-node .n-num   { font-size: 20px; color: #C62828; }
+.pat-node .n-sub   { font-size: 9.5px; margin-bottom: 3px; }
 .pat-bar-fill { height: 100%; background: #C62828; border-radius: 2px; }
 
-/* Feb reference chip inside indevidos node */
-.feb-ref {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 13px; font-weight: 700; color: #C62828;
-  background: #ffeaea; border: 1.5px solid #f5c0c0;
-  border-radius: 7px; padding: 4px 10px;
-  margin: 5px 0 3px;
-}
+.sub-cat-node { width: 100px; border-color: #c8e6c9 !important; background: #f9fff9 !important; box-shadow: 0 1px 4px rgba(46,125,50,.06) !important; }
+.sub-cat-node .n-title { font-size: 10.5px; color: #2E7D32; }
+.sub-cat-node .n-tag   { font-size: 8.5px; color: #388E3C; }
+.sub-cat-node .n-num   { font-size: 18px; color: #2E7D32; }
+.sub-cat-node .n-sub   { font-size: 9px; }
+
+.feb-ref { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: #C62828; background: #ffeaea; border: 1.5px solid #f5c0c0; border-radius: 7px; padding: 4px 10px; margin: 5px 0 3px; }
 </style>
 </head>
 <body>
@@ -217,34 +200,34 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 <!-- NAV -->
 <nav class="top-nav">
   <div class="nav-brand">Eng Ops · BU Affluents</div>
-  <a href="#visao"><span class="nd nd-p"></span>Visão Geral</a>
-  <a href="#foco1"><span class="nd nd-r"></span>Foco 1 — Indevidos</a>
-  <a href="#foco2"><span class="nd nd-g"></span>Foco 2 — Devidos</a>
-  <a href="#plano"><span class="nd nd-o"></span>Plano de Ação</a>
+  <button class="tab-btn active" onclick="switchTab('main',this)"><span class="nd nd-p"></span>Visão Geral</button>
+  <button class="tab-btn" onclick="switchTab('analise',this)"><span class="nd nd-r"></span><span class="nd nd-g" style="margin-left:-4px"></span>Análise Detalhada</button>
 </nav>
 
 <!-- HEADER -->
 <div class="page-header">
   <h1>Projeto de Redução de Tickets Eng Ops — BU Affluents</h1>
-  <div class="sub">Fila Mobility - Travel &nbsp;·&nbsp; Dez/2025 – Fev/2026 &nbsp;·&nbsp; 291 tickets analisados &nbsp;·&nbsp; Gerado em 16/03/2026</div>
+  <div class="sub">Fila Mobility - Travel &nbsp;·&nbsp; Dez/2025 – Fev/2026 &nbsp;·&nbsp; 291 tickets analisados &nbsp;·&nbsp; Gerado em 17/03/2026</div>
 </div>
 
 <!-- ══════════════════════════════════
-     SEÇÃO 0 — VISÃO GERAL (ÁRVORE)
+     TAB 1 — VISÃO GERAL
 ══════════════════════════════════ -->
+<div id="tab-main" class="tab-page active">
+
+<!-- SEÇÃO 0 — ÁRVORE -->
 <div id="visao" class="sec">
 
   <div class="legend">
     <div class="leg-item"><div class="leg-dot lp"></div> Camada do projeto</div>
-    <div class="leg-item"><div class="leg-dot lr"></div> <strong>Foco 1</strong> — Indevidos · Ação via CX</div>
-    <div class="leg-item"><div class="leg-dot lg"></div> <strong>Foco 2</strong> — Devidos · Melhorias Produto/Processo</div>
+    <div class="leg-item"><div class="leg-dot lr"></div> <strong>Fase 1</strong> — Indevidos + Evitáveis · Ação via CX</div>
+    <div class="leg-item"><div class="leg-dot lg"></div> <strong>Fase 2</strong> — Devidos técnicos · Melhorias Produto/Processo</div>
   </div>
 
   <div class="tree-scroll">
   <div class="tree-container" id="tree-wrap">
     <svg id="svg-lines"></svg>
 
-    <!-- ── ROOT SUBTREE: BUNOPS ── -->
     <div class="subtree">
       <div class="node" id="n-bunops">
         <div class="n-tag">Camada 1 · Projeto</div>
@@ -254,10 +237,9 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
         <div class="n-body">Tickets escalados pelo CX de Affluents para Engenharia. Múltiplas filas: UV, NuTag, Conta Global, eSIM, Seguro, Detran, NuViagens.</div>
       </div>
 
-      <!-- L2 children: Mobility + Outras -->
       <div class="t-children wide">
 
-        <!-- ── MOBILITY SUBTREE ── -->
+        <!-- MOBILITY SUBTREE -->
         <div class="subtree">
           <div class="node" id="n-mobility">
             <div class="n-tag">Camada 2 · Fila — Foco inicial</div>
@@ -270,144 +252,252 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
             <div class="n-body" style="margin-top:6px">Conta Global, eSIM, Seguro Viagem UV, Detran, NuViagens.</div>
           </div>
 
-          <!-- L3 children: Devidos + Indevidos -->
           <div class="t-children">
 
-            <!-- ── DEVIDOS SUBTREE ── -->
+            <!-- DEVIDOS SUBTREE -->
             <div class="subtree">
               <div class="node focus2" id="n-devidos">
-                <div class="focus-badge fb-green">🎯 Foco 2 — Melhorias</div>
+                <div class="focus-badge fb-green">Fase 2 — Melhorias Produto/Processo</div>
                 <div class="n-tag">Camada 3 · Mobility</div>
                 <div class="n-title">Devidamente escalados</div>
-                <div class="n-num">~85<span>/mês</span></div>
-                <div class="n-sub">88% dos tickets de Mobility</div>
+                <div class="n-num">~73<span>/mês</span></div>
+                <div class="n-sub">74% dos tickets de Mobility</div>
+                <div style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:#1B5E20;background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:7px;padding:3px 9px;margin:5px 0 4px;">⚙️ qtd efetiva (s/ evitáveis): ~43/mês · 44%</div>
                 <div class="n-body">Casos com ação real de Eng Ops. Oportunidade: reduzir volume com melhorias de produto e processo.</div>
               </div>
 
-              <!-- L4 Devidos: categorias -->
               <div class="t-children tight">
-                <div class="node cat-node" id="c1">
+                <div class="subtree">
+                  <div class="node cat-node" id="c2">
+                    <div class="n-tag">Conta Global</div>
+                    <div class="n-title">Saldo e Conversão</div>
+                    <div class="n-num">52 <span style="font-size:9px">3m</span></div>
+                    <div class="n-sub">~17/mês · 24%</div>
+                    <div class="bar"><div class="bar-fill" style="width:24%"></div></div>
+                    <div class="n-sub" style="font-size:9px;color:#999;margin-top:3px">deep-dive: 42% técnico · 58% evitável</div>
+                  </div>
+                  <div class="t-children tight" style="margin-top:30px">
+                    <div class="node sub-cat-node" id="c2a">
+                      <div class="n-tag">Técnico</div>
+                      <div class="n-title">Bug / Wise</div>
+                      <div class="n-num">22</div>
+                      <div class="n-sub">42% · reprocess./estorno</div>
+                    </div>
+                    <div class="node sub-cat-node" id="c2b">
+                      <div class="n-tag">Evitável</div>
+                      <div class="n-title">RFI · Spread · Info</div>
+                      <div class="n-num">30</div>
+                      <div class="n-sub">58% · processo/visib. CX</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="subtree">
+                  <div class="node cat-node" id="c1">
+                    <div class="n-tag">Conta Global</div>
+                    <div class="n-title">UV sem acesso</div>
+                    <div class="n-num">35 <span style="font-size:9px">3m</span></div>
+                    <div class="n-sub">~12/mês · 16%</div>
+                    <div class="bar"><div class="bar-fill" style="width:16%"></div></div>
+                    <div class="n-sub" style="font-size:9px;color:#999;margin-top:3px">deep-dive: 88% técnico · 12% evitável</div>
+                  </div>
+                  <div class="t-children tight" style="margin-top:30px">
+                    <div class="node sub-cat-node" id="c1a">
+                      <div class="n-tag">Técnico</div>
+                      <div class="n-title">Reativ. · device · bug</div>
+                      <div class="n-num">23</div>
+                      <div class="n-sub">88% · backend/Wise</div>
+                    </div>
+                    <div class="node sub-cat-node" id="c1b">
+                      <div class="n-tag">Evitável</div>
+                      <div class="n-title">Delay · triagem Wise</div>
+                      <div class="n-num">3</div>
+                      <div class="n-sub">12% · processo disponível</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="subtree">
+                  <div class="node cat-node" id="c3">
+                    <div class="n-tag">Conta Global</div>
+                    <div class="n-title">Transações Cartão</div>
+                    <div class="n-num">35 <span style="font-size:9px">3m</span></div>
+                    <div class="n-sub">~12/mês · 16%</div>
+                    <div class="bar"><div class="bar-fill" style="width:16%"></div></div>
+                    <div class="n-sub" style="font-size:9px;color:#999;margin-top:3px">deep-dive: 54% técnico · 46% evitável</div>
+                  </div>
+                  <div class="t-children tight" style="margin-top:30px">
+                    <div class="node sub-cat-node" id="c3a">
+                      <div class="n-tag">Técnico</div>
+                      <div class="n-title">PIN block / bugs</div>
+                      <div class="n-num">19</div>
+                      <div class="n-sub">54% · reset/Eng Ops</div>
+                    </div>
+                    <div class="node sub-cat-node" id="c3b">
+                      <div class="n-tag">Evitável</div>
+                      <div class="n-title">Wise 2nd · timeout</div>
+                      <div class="n-num">16</div>
+                      <div class="n-sub">46% · fluxo existente</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="subtree">
+                  <div class="node cat-node" id="c4">
+                    <div class="n-tag">eSIM</div>
+                    <div class="n-title">Compatibilidade eSIM</div>
+                    <div class="n-num">31 <span style="font-size:9px">3m</span></div>
+                    <div class="n-sub">~10/mês · 14%</div>
+                    <div class="bar"><div class="bar-fill" style="width:14%"></div></div>
+                    <div class="n-sub" style="font-size:9px;color:#999;margin-top:3px">deep-dive: 48% técnico · 52% evitável</div>
+                  </div>
+                  <div class="t-children tight" style="margin-top:30px">
+                    <div class="node sub-cat-node" id="c4a">
+                      <div class="n-tag">Técnico</div>
+                      <div class="n-title">Backend / Gigs</div>
+                      <div class="n-num">15</div>
+                      <div class="n-sub">48% · ativação/bug</div>
+                    </div>
+                    <div class="node sub-cat-node" id="c4b">
+                      <div class="n-tag">Evitável</div>
+                      <div class="n-title">Shuffle · produto</div>
+                      <div class="n-num">16</div>
+                      <div class="n-sub">52% · reemissão/elegib.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="subtree">
+                  <div class="node cat-node" id="c5">
+                    <div class="n-tag">Conta Global</div>
+                    <div class="n-title">Entrega do Cartão</div>
+                    <div class="n-num">23 <span style="font-size:9px">3m</span></div>
+                    <div class="n-sub">~8/mês · 10%</div>
+                    <div class="bar"><div class="bar-fill" style="width:10%"></div></div>
+                    <div class="n-sub" style="font-size:9px;color:#999;margin-top:3px">deep-dive: 57% técnico · 43% evitável</div>
+                  </div>
+                  <div class="t-children tight" style="margin-top:30px">
+                    <div class="node sub-cat-node" id="c5a">
+                      <div class="n-tag">Técnico</div>
+                      <div class="n-title">Wise / bug</div>
+                      <div class="n-num">13</div>
+                      <div class="n-sub">57% · reativ./entrega</div>
+                    </div>
+                    <div class="node sub-cat-node" id="c5b">
+                      <div class="n-tag">Evitável</div>
+                      <div class="n-title">Fila errada · op.</div>
+                      <div class="n-num">10</div>
+                      <div class="n-sub">43% · cancel./operacional</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="subtree">
+                  <div class="node cat-node" id="c6">
+                    <div class="n-tag">Seguro Viagem UV</div>
+                    <div class="n-title">E-mail / Apólice</div>
+                    <div class="n-num">23 <span style="font-size:9px">3m</span></div>
+                    <div class="n-sub">~8/mês · 10%</div>
+                    <div class="bar"><div class="bar-fill" style="width:10%"></div></div>
+                    <div class="n-sub" style="font-size:9px;color:#999;margin-top:3px">deep-dive: 35% técnico · 65% evitável</div>
+                  </div>
+                  <div class="t-children tight" style="margin-top:30px">
+                    <div class="node sub-cat-node" id="c6a">
+                      <div class="n-tag">Técnico</div>
+                      <div class="n-title">Erro Chubb</div>
+                      <div class="n-num">8</div>
+                      <div class="n-sub">35% · emissão/cert.</div>
+                    </div>
+                    <div class="node sub-cat-node" id="c6b">
+                      <div class="n-tag">Evitável</div>
+                      <div class="n-title">Self-service · elegib.</div>
+                      <div class="n-num">15</div>
+                      <div class="n-sub">65% · app/orientação</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="node cat-node" id="c7">
                   <div class="n-tag">Conta Global</div>
-                  <div class="n-title">UV sem acesso</div>
-                  <div class="n-num">68 <span style="font-size:9px">3m</span></div>
-                  <div class="n-sub">~23/mês · 27%</div>
-                  <div class="bar"><div class="bar-fill" style="width:27%"></div></div>
-                  <div class="ind">14 indevidos (17%)</div>
+                  <div class="n-title">Deactivation report</div>
+                  <div class="n-num">11 <span style="font-size:9px">3m</span></div>
+                  <div class="n-sub">~4/mês · 5%</div>
+                  <div class="bar"><div class="bar-fill" style="width:5%"></div></div>
+                  <div class="n-sub" style="font-size:9px;color:#999;margin-top:3px">planilha Wise ~3x/mês · desativações programadas</div>
                 </div>
-                <div class="node cat-node" id="c2">
-                  <div class="n-tag">Conta Global</div>
-                  <div class="n-title">Saldo e Conversão</div>
-                  <div class="n-num">49 <span style="font-size:9px">3m</span></div>
-                  <div class="n-sub">~16/mês · 19%</div>
-                  <div class="bar"><div class="bar-fill" style="width:19%"></div></div>
-                  <div class="ind">9 indevidos (16%)</div>
-                </div>
-                <div class="node cat-node" id="c3">
-                  <div class="n-tag">Conta Global</div>
-                  <div class="n-title">Transações Cartão</div>
-                  <div class="n-num">32 <span style="font-size:9px">3m</span></div>
-                  <div class="n-sub">~11/mês · 13%</div>
-                  <div class="bar"><div class="bar-fill" style="width:13%"></div></div>
-                  <div class="ind">5 indevidos (14%)</div>
-                </div>
-                <div class="node cat-node" id="c4">
-                  <div class="n-tag">eSIM</div>
-                  <div class="n-title">Compatibilidade eSIM</div>
-                  <div class="n-num">29 <span style="font-size:9px">3m</span></div>
-                  <div class="n-sub">~10/mês · 11%</div>
-                  <div class="bar"><div class="bar-fill" style="width:11%"></div></div>
-                  <div class="ind ok">1 indevido (3%) ✅</div>
-                </div>
-                <div class="node cat-node" id="c5">
-                  <div class="n-tag">Conta Global</div>
-                  <div class="n-title">Entrega do Cartão</div>
-                  <div class="n-num">22 <span style="font-size:9px">3m</span></div>
-                  <div class="n-sub">~7/mês · 9%</div>
-                  <div class="bar"><div class="bar-fill" style="width:9%"></div></div>
-                  <div class="ind">3 indevidos (12%)</div>
-                </div>
-                <div class="node cat-node" id="c6">
-                  <div class="n-tag">Seguro Viagem UV</div>
-                  <div class="n-title">E-mail / Apólice</div>
-                  <div class="n-num">23 <span style="font-size:9px">3m</span></div>
-                  <div class="n-sub">~8/mês · 9%</div>
-                  <div class="bar"><div class="bar-fill" style="width:9%"></div></div>
-                  <div class="ind ok">0 indevidos ✅</div>
-                </div>
-                <div class="node cat-node" id="c7" style="background:#fafafa;border-color:#ddd !important">
+
+                <div class="node cat-node" id="c8" style="background:#fafafa;border-color:#ddd !important">
                   <div class="n-tag" style="color:#bbb">Demais</div>
                   <div class="n-title" style="color:#999">Gigs · NuViagens · Detran · Outros</div>
-                  <div class="n-num" style="color:#ccc">32 <span style="font-size:9px">3m</span></div>
-                  <div class="n-sub">~11/mês · 13%</div>
-                  <div class="bar"><div class="bar-fill" style="width:13%;background:#ccc"></div></div>
+                  <div class="n-num" style="color:#ccc">11 <span style="font-size:9px">3m</span></div>
+                  <div class="n-sub">~4/mês · 5%</div>
+                  <div class="bar"><div class="bar-fill" style="width:5%;background:#ccc"></div></div>
                 </div>
               </div>
             </div>
             <!-- /DEVIDOS SUBTREE -->
 
-            <!-- ── INDEVIDOS SUBTREE ── -->
+            <!-- INDEVIDOS SUBTREE -->
             <div class="subtree">
               <div class="node focus1" id="n-indevidos">
-                <div class="focus-badge fb-red">🎯 Foco 1 — Ação imediata</div>
+                <div class="focus-badge fb-red">Fase 1 — Ação imediata via CX</div>
                 <div class="n-tag">Camada 3 · Mobility</div>
                 <div class="n-title">Indevidamente escalados</div>
-                <div class="n-num">~13<span>/mês</span></div>
-                <div class="n-sub">12% dos tickets de Mobility</div>
-                <div class="feb-ref">📍 30 em fev/26†</div>
-                <div class="n-sub" style="margin-bottom:5px">= NO ENG OPS + Won't Do</div>
+                <div class="n-num">~26<span>/mês</span></div>
+                <div class="n-sub">26% dos tickets de Mobility · = NO ENG OPS + Won't Do</div>
+                <div style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:#7B3F00;background:#fff3e0;border:1.5px solid #ffcc80;border-radius:7px;padding:3px 9px;margin:5px 0 4px;">⚙️ qtd efetiva (c/ evitáveis): ~56/mês · 57%</div>
                 <div class="n-body">Chegaram ao BUNOPS sem precisar de ação de Eng. Erros de triagem corrigíveis com treinamento e documentação.</div>
               </div>
 
-              <!-- L4 Indevidos: 7 causas raiz -->
               <div class="t-children tight">
                 <div class="node pat-node" id="p1">
-                  <div class="n-tag">Canal errado</div>
-                  <div class="n-title">→ Wise</div>
-                  <div class="n-num">11</div>
-                  <div class="n-sub">30,6% dos indevidos</div>
-                  <div class="bar"><div class="pat-bar-fill" style="width:31%"></div></div>
+                  <div class="n-tag">Causa 1</div>
+                  <div class="n-title">Auto-resolvido</div>
+                  <div class="n-num">~6</div>
+                  <div class="n-sub">24% · estado atual não verificado</div>
+                  <div class="bar"><div class="pat-bar-fill" style="width:24%"></div></div>
                 </div>
                 <div class="node pat-node" id="p2">
-                  <div class="n-tag">Canal errado</div>
-                  <div class="n-title">→ #core-identity</div>
-                  <div class="n-num">8</div>
-                  <div class="n-sub">22,2% dos indevidos</div>
+                  <div class="n-tag">Causa 2</div>
+                  <div class="n-title">Canal errado — Wise</div>
+                  <div class="n-num">~6</div>
+                  <div class="n-sub">22% · canal ou responsabilidade Wise</div>
                   <div class="bar"><div class="pat-bar-fill" style="width:22%"></div></div>
                 </div>
                 <div class="node pat-node" id="p3">
-                  <div class="n-tag">Sem ação</div>
-                  <div class="n-title">Caso auto-resolvido</div>
-                  <div class="n-num">5</div>
-                  <div class="n-sub">13,9% dos indevidos</div>
-                  <div class="bar"><div class="pat-bar-fill" style="width:14%"></div></div>
+                  <div class="n-tag">Causa 3</div>
+                  <div class="n-title">Limitação de produto</div>
+                  <div class="n-num">~4</div>
+                  <div class="n-sub">16% · comportamento esperado</div>
+                  <div class="bar"><div class="pat-bar-fill" style="width:16%"></div></div>
                 </div>
                 <div class="node pat-node" id="p4">
-                  <div class="n-tag">Produto</div>
-                  <div class="n-title">Limitação de produto</div>
-                  <div class="n-num">5</div>
-                  <div class="n-sub">13,9% dos indevidos</div>
-                  <div class="bar"><div class="pat-bar-fill" style="width:14%"></div></div>
+                  <div class="n-tag">Causa 4</div>
+                  <div class="n-title">Canal errado — core-identity</div>
+                  <div class="n-num">~3</div>
+                  <div class="n-sub">13% · deveria ir a #core-identity-helpdesk</div>
+                  <div class="bar"><div class="pat-bar-fill" style="width:13%"></div></div>
                 </div>
                 <div class="node pat-node" id="p5">
-                  <div class="n-tag">Fila errada</div>
-                  <div class="n-title">Detran</div>
-                  <div class="n-num">3</div>
-                  <div class="n-sub">8,3% dos indevidos</div>
+                  <div class="n-tag">Causa 5</div>
+                  <div class="n-title">Verificação prévia</div>
+                  <div class="n-num">~2</div>
+                  <div class="n-sub">8% · backoffice não consultado</div>
                   <div class="bar"><div class="pat-bar-fill" style="width:8%"></div></div>
                 </div>
                 <div class="node pat-node" id="p6">
-                  <div class="n-tag">Processo</div>
-                  <div class="n-title">Falta verificação prévia</div>
-                  <div class="n-num">3</div>
-                  <div class="n-sub">8,3% dos indevidos</div>
-                  <div class="bar"><div class="pat-bar-fill" style="width:8%"></div></div>
+                  <div class="n-tag">Causa 6</div>
+                  <div class="n-title">Fila errada — Detran</div>
+                  <div class="n-num">~2</div>
+                  <div class="n-sub">7% · competência do órgão</div>
+                  <div class="bar"><div class="pat-bar-fill" style="width:7%"></div></div>
                 </div>
                 <div class="node pat-node" id="p7">
-                  <div class="n-tag">Canal errado</div>
-                  <div class="n-title">→ Processo interno</div>
-                  <div class="n-num">1</div>
-                  <div class="n-sub">2,8% dos indevidos</div>
-                  <div class="bar"><div class="pat-bar-fill" style="width:3%"></div></div>
+                  <div class="n-tag">Causa 7</div>
+                  <div class="n-title">Processo / SLA desconhecido</div>
+                  <div class="n-num">~1</div>
+                  <div class="n-sub">4% · fluxo ou prazo não seguido</div>
+                  <div class="bar"><div class="pat-bar-fill" style="width:4%"></div></div>
                 </div>
               </div>
             </div>
@@ -417,7 +507,7 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
         </div>
         <!-- /MOBILITY SUBTREE -->
 
-        <!-- ── OUTRAS (folha) ── -->
+        <!-- OUTRAS (folha) -->
         <div class="subtree" style="margin-top: 0">
           <div class="node" id="n-outras">
             <div class="n-tag">Camada 2 · Demais filas</div>
@@ -435,7 +525,6 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 
       </div>
     </div>
-    <!-- /ROOT SUBTREE -->
 
   </div><!-- /tree-container -->
   </div><!-- /tree-scroll -->
@@ -445,80 +534,359 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
     &nbsp;|&nbsp; Volumes de Mobility - Travel são exatos (JQL: <code>"(BUNOPS) Ops Queue" = "Mobility - Travel"</code>).
     &nbsp;|&nbsp; † Monitoramento ativo de escalamentos indevidos iniciado em fev/26 — números de dez/25 e jan/26 são subestimados e não usados como referência.
     &nbsp;|&nbsp; Indevidos = tickets com categoria <strong>NO ENG OPS</strong> ou resolução <strong>Won't Do</strong>.
-    &nbsp;|&nbsp; % por causa raiz baseado em leitura integral dos 36 tickets indevidos do trimestre (descrição + comentários).
+    &nbsp;|&nbsp; % por causa raiz baseado em leitura integral dos 78 tickets indevidos do trimestre (descrição + comentários).
+  </div>
+</div>
+<!-- /SEÇÃO 0 -->
+
+<hr class="div">
+
+<!-- ══════════════════════════════════
+     PLANO DE AÇÃO
+══════════════════════════════════ -->
+<div id="plano" class="sec narrow">
+  <div class="stitle"><span class="snum">1</span> Plano de Ação — 6 Iniciativas</div>
+
+  <!-- FASE CONTEXT -->
+  <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:280px;background:#fff8f8;border:1.5px solid #f5c0c0;border-radius:10px;padding:14px 16px;">
+      <div style="font-size:12px;font-weight:700;color:#C62828;margin-bottom:6px;">🎯 Fase 1 — Indevidos + Evitáveis</div>
+      <div style="font-size:12px;color:#666;line-height:1.6;">Universo: <strong>~56/mês</strong> (indevidos formais ~26 + evitáveis dentro dos devidos ~30). Meta: <strong>-42/mês</strong> até jun/26 via treinamento CX, roteamento e produto. Ações: i, ii, iii, iv.</div>
+    </div>
+    <div style="flex:1;min-width:280px;background:#f6fff6;border:1.5px solid #a5d6a7;border-radius:10px;padding:14px 16px;">
+      <div style="font-size:12px;font-weight:700;color:#2E7D32;margin-bottom:6px;">⚙️ Fase 2 — Devidos Técnicos</div>
+      <div style="font-size:12px;color:#666;line-height:1.6;">Universo: <strong>~39/mês</strong> genuinamente técnicos. Meta: <strong>-6/mês</strong> até jul/26 via automação e self-service. Ações: v, vi.</div>
+    </div>
+  </div>
+
+  <div class="block" style="padding:0;overflow:hidden;">
+    <table style="margin:0;">
+      <thead>
+        <tr>
+          <th style="width:32px">#</th>
+          <th style="width:200px">Ação</th>
+          <th>Descrição</th>
+          <th style="width:170px">Impacto estimado¹</th>
+          <th style="width:110px">Fase</th>
+          <th style="width:80px">Prioridade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#fff8f8;">
+          <td style="font-weight:800;color:#C62828;font-size:14px;text-align:center;">i</td>
+          <td style="font-weight:700;">Atualização de material e treinamento CX</td>
+          <td style="font-size:12px;line-height:1.6;">Guia de triagem unificado (árvore de decisão: BUNOPS × Wise CX × #core-identity-helpdesk × processo interno) + checklist mínimo de troubleshooting antes do escalamento. Cobre canais errados (35%), verificação prévia (8%) e limitações de produto (16%). Ramp gradual em 3 meses.</td>
+          <td style="font-size:12px;"><strong>~18/mês</strong> líq.<br><span style="color:#999;font-size:11px;">(~20/mês bruto¹)</span></td>
+          <td><span class="fase-label fase1">Fase 1</span></td>
+          <td><span class="pri pri-high">Alta</span></td>
+        </tr>
+        <tr style="background:#fff8f8;">
+          <td style="font-weight:800;color:#C62828;font-size:14px;text-align:center;">ii</td>
+          <td style="font-weight:700;">Alteração de forms e roteamento Jira</td>
+          <td style="font-size:12px;line-height:1.6;">Campos obrigatórios no formulário de abertura do ticket (ex: verificou no Shuffle? qual canal já foi acionado?) + regras de roteamento automático para casos Detran, Wise e core-identity. Reduz tickets que chegam sem triagem prévia.</td>
+          <td style="font-size:12px;"><strong>~18/mês</strong> líq.<br><span style="color:#999;font-size:11px;">(~20/mês bruto¹)</span></td>
+          <td><span class="fase-label fase1">Fase 1</span></td>
+          <td><span class="pri pri-high">Alta</span></td>
+        </tr>
+        <tr style="background:#fffef0;">
+          <td style="font-weight:800;color:#E65100;font-size:14px;text-align:center;">iii</td>
+          <td style="font-weight:700;">Tagueamento automático de casos RFI</td>
+          <td style="font-size:12px;line-height:1.6;">In-app tag <code>cliente_rfi_com_docs_pendentes</code> visível no Shuffle para o agente CX. Quando cliente está em verificação de documentos Wise, o agente vê o status e não abre ticket. RFC em elaboração. Endereça ~10 tickets/trim em c2 + indevidos com mesma causa.</td>
+          <td style="font-size:12px;"><strong>~4/mês</strong> líq.<br><span style="color:#999;font-size:11px;">(~7/mês bruto¹)</span></td>
+          <td><span class="fase-label fase1">Fase 1</span></td>
+          <td><span class="pri pri-mid">Média</span></td>
+        </tr>
+        <tr style="background:#fffef5;border-left:3px solid #ffe082;">
+          <td style="text-align:center;color:#888;font-size:13px;">↳</td>
+          <td style="font-weight:700;color:#555;">Comms in-app — status RFI para o cliente</td>
+          <td style="font-size:12px;line-height:1.6;">Notificação proativa informando o cliente que está em processo de verificação de documentos (RFI) e quais docs enviar. Reduz a duração média do RFI e o volume de contatos CX sobre o tema — o cliente resolve sem precisar ligar.</td>
+          <td style="font-size:12px;color:#888;">Coberto por (iii)<br><span style="font-size:11px;">Benefício incremental: ↓ duração RFI · ↑ exp. cliente</span></td>
+          <td><span class="fase-label fase1">Fase 1</span></td>
+          <td><span class="pri pri-mid">Média</span></td>
+        </tr>
+        <tr style="background:#fffef0;">
+          <td style="font-weight:800;color:#E65100;font-size:14px;text-align:center;">iv</td>
+          <td style="font-weight:700;">Spread zero automático (produto/processo)</td>
+          <td style="font-size:12px;line-height:1.6;">Inclusão automática de todos os clientes UV no rollout de spread zero — eliminando a planilha manual de exceção. Endereça ~7 tickets/trim em c2 (evitáveis por processo não seguido) + casos indevidos correlatos.</td>
+          <td style="font-size:12px;"><strong>~2/mês</strong> líq.<br><span style="color:#999;font-size:11px;">(~3/mês bruto¹)</span></td>
+          <td><span class="fase-label fase1">Fase 1</span></td>
+          <td><span class="pri pri-low">Baixa</span></td>
+        </tr>
+        <tr style="background:#f6fff6;">
+          <td style="font-weight:800;color:#2E7D32;font-size:14px;text-align:center;">v</td>
+          <td style="font-weight:700;">Webhook — Deactivation report automático</td>
+          <td style="font-size:12px;line-height:1.6;">Automação do processamento da planilha Wise de desativações (~3x/mês). Cada envio gera ~4 tickets BUNOPS hoje — o webhook processa automaticamente via API Wise sem intervenção humana, zerando a categoria c7.</td>
+          <td style="font-size:12px;"><strong>~4/mês</strong><br><span style="color:#999;font-size:11px;">(c7 → 0 a partir jun/26)</span></td>
+          <td><span class="fase-label fase2">Fase 2</span></td>
+          <td><span class="pri pri-high">Alta</span></td>
+        </tr>
+        <tr style="background:#f6fff6;">
+          <td style="font-weight:800;color:#2E7D32;font-size:14px;text-align:center;">vi</td>
+          <td style="font-weight:700;">Self-service — Reativação de CG cancelada (T1)</td>
+          <td style="font-size:12px;line-height:1.6;">7 tickets/trim (sub-padrão T1 em c1) chegam ao Eng Ops exclusivamente por ausência de self-service de reativação de conta global cancelada. Construir fluxo de reativação no app ou via CX sem necessidade de ação backend pelo Eng Ops.</td>
+          <td style="font-size:12px;"><strong>~2/mês</strong><br><span style="color:#999;font-size:11px;">(ativo a partir jul/26)</span></td>
+          <td><span class="fase-label fase2">Fase 2</span></td>
+          <td><span class="pri pri-mid">Média</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fnote">
+    ¹ <strong>Líquido vs. bruto:</strong> Ações i e ii cobrem o mesmo universo de ~56/mês (indevidos + evitáveis). O bruto individual seria ~20/mês cada, mas como atuam sobre tickets sobrepostos, o impacto combinado real (líquido) é ~36/mês. Ações iii e iv têm bruto maior porque incluem indevidos com a mesma causa raiz — já parcialmente cobertos por i+ii; o líquido incremental é o ganho adicional além do que i+ii já capturam.
   </div>
 </div>
 
 <hr class="div">
 
 <!-- ══════════════════════════════════
-     SEÇÃO 1 — FOCO 1: INDEVIDOS
+     PROJEÇÃO DE IMPACTO
 ══════════════════════════════════ -->
-<div id="foco1" class="sec narrow">
+<div class="sec narrow">
+  <div class="stitle"><span class="snum">2</span> Projeção de Impacto — Mar a Jul/2026</div>
 
+  <div class="block" style="padding:0;overflow:hidden;">
+    <table style="margin:0;">
+      <thead>
+        <tr>
+          <th>Mês</th>
+          <th style="text-align:center;">Indevidos + Evitáveis</th>
+          <th style="text-align:center;">Devidos Técnicos</th>
+          <th style="text-align:center;">Total</th>
+          <th style="text-align:center;">Δ vs. base</th>
+          <th style="text-align:center;">% redução</th>
+          <th>Marcos do mês</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#faf5ff;">
+          <td style="font-weight:700;">Mar/26 <span style="font-size:10px;color:#999;font-weight:400;">(base)</span></td>
+          <td style="text-align:center;font-weight:700;">~60</td>
+          <td style="text-align:center;font-weight:700;">~39</td>
+          <td style="text-align:center;font-weight:800;font-size:15px;color:#3b1066;">~99</td>
+          <td style="text-align:center;color:#999;">—</td>
+          <td style="text-align:center;color:#999;">—</td>
+          <td style="font-size:11px;color:#888;">Medição de referência · plano em preparação</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">Abr/26</td>
+          <td style="text-align:center;">~46</td>
+          <td style="text-align:center;">~39</td>
+          <td style="text-align:center;font-weight:800;font-size:15px;color:#E65100;">~85</td>
+          <td style="text-align:center;color:#C62828;font-weight:700;">−14</td>
+          <td style="text-align:center;"><span class="badge bo">−14%</span></td>
+          <td style="font-size:11px;">⅓ das ações i+ii ativas · iii e iv em operação</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">Mai/26</td>
+          <td style="text-align:center;">~32</td>
+          <td style="text-align:center;">~39</td>
+          <td style="text-align:center;font-weight:800;font-size:15px;color:#E65100;">~71</td>
+          <td style="text-align:center;color:#C62828;font-weight:700;">−28</td>
+          <td style="text-align:center;"><span class="badge bo">−28%</span></td>
+          <td style="font-size:11px;">⅔ das ações i+ii · webhook (v) em construção · (vi) em construção</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">Jun/26</td>
+          <td style="text-align:center;">~18</td>
+          <td style="text-align:center;color:#2E7D32;font-weight:700;">~35</td>
+          <td style="text-align:center;font-weight:800;font-size:15px;color:#2E7D32;">~53</td>
+          <td style="text-align:center;color:#C62828;font-weight:700;">−46</td>
+          <td style="text-align:center;"><span class="badge bg">−46%</span></td>
+          <td style="font-size:11px;">i+ii plenos · webhook ativo — c7 → 0 (v) · (vi) em construção</td>
+        </tr>
+        <tr style="background:#f6fff6;">
+          <td style="font-weight:700;">Jul/26+</td>
+          <td style="text-align:center;">~18</td>
+          <td style="text-align:center;color:#2E7D32;font-weight:700;">~33</td>
+          <td style="text-align:center;font-weight:800;font-size:15px;color:#2E7D32;">~51</td>
+          <td style="text-align:center;color:#C62828;font-weight:700;">−48</td>
+          <td style="text-align:center;"><span class="badge bg">−48%</span></td>
+          <td style="font-size:11px;">Self-service reativação ativo (vi) · estado estável</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight">
+    <strong>💡 Meta:</strong> Reduzir de ~99 para ~51 tickets/mês até jul/26 — <strong>queda de 48%</strong>. A Fase 1 (CX) concentra o maior volume de redução (~42/mês), atingível principalmente com treinamento e roteamento. A Fase 2 (produto/eng) entrega −6/mês adicionais via automação.
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ══════════════════════════════════
+     ROADMAP
+══════════════════════════════════ -->
+<div class="sec narrow">
+  <div class="stitle"><span class="snum">3</span> Roadmap — Linha do Tempo das Iniciativas</div>
+
+  <div class="block">
+    <div class="gantt-legend">
+      <div class="gl-item"><div class="gl-dot" style="background:#f3e8ff;border:1px solid #C4A8E0;"></div> Preparação</div>
+      <div class="gl-item"><div class="gl-dot" style="background:#ffe0b2;border:1px solid #E65100;"></div> Ramp ⅓</div>
+      <div class="gl-item"><div class="gl-dot" style="background:#ffcc80;border:1px solid #BF360C;"></div> Ramp ⅔</div>
+      <div class="gl-item"><div class="gl-dot" style="background:#a5d6a7;border:1px solid #2E7D32;"></div> Pleno / Ativo</div>
+      <div class="gl-item"><div class="gl-dot" style="background:#bbdefb;border:1px solid #0D47A1;"></div> Em construção</div>
+      <div class="gl-item"><div class="gl-dot" style="background:#f5f5f5;border:1px solid #bbb;"></div> Decisão produto</div>
+    </div>
+
+    <div class="gantt-wrap">
+    <table class="gantt-table">
+      <thead>
+        <tr>
+          <th class="row-hd">Iniciativa</th>
+          <th>Fase</th>
+          <th>Mar/26</th>
+          <th>Abr/26</th>
+          <th>Mai/26</th>
+          <th>Jun/26</th>
+          <th>Jul/26+</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-hd">(i) Treinamento CX + guia de triagem</td>
+          <td style="text-align:center;"><span class="fase-label fase1" style="font-size:9.5px;">Fase 1</span></td>
+          <td class="gc-prep">prep.</td>
+          <td class="gc-ramp1">⅓ ativo</td>
+          <td class="gc-ramp2">⅔ ativo</td>
+          <td class="gc-full">pleno</td>
+          <td class="gc-full">pleno</td>
+        </tr>
+        <tr>
+          <td class="row-hd">(ii) Forms + roteamento Jira</td>
+          <td style="text-align:center;"><span class="fase-label fase1" style="font-size:9.5px;">Fase 1</span></td>
+          <td class="gc-prep">prep.</td>
+          <td class="gc-ramp1">⅓ ativo</td>
+          <td class="gc-ramp2">⅔ ativo</td>
+          <td class="gc-full">pleno</td>
+          <td class="gc-full">pleno</td>
+        </tr>
+        <tr>
+          <td class="row-hd">(iii) Tag RFI in-app / Shuffle</td>
+          <td style="text-align:center;"><span class="fase-label fase1" style="font-size:9.5px;">Fase 1</span></td>
+          <td class="gc-empty">—</td>
+          <td class="gc-active">ativo</td>
+          <td class="gc-active">ativo</td>
+          <td class="gc-active">ativo</td>
+          <td class="gc-active">ativo</td>
+        </tr>
+        <tr>
+          <td class="row-hd">(iv) Spread zero automático</td>
+          <td style="text-align:center;"><span class="fase-label fase1" style="font-size:9.5px;">Fase 1</span></td>
+          <td class="gc-empty">—</td>
+          <td class="gc-passive">decisão prod.</td>
+          <td class="gc-passive">decisão prod.</td>
+          <td class="gc-passive">decisão prod.</td>
+          <td class="gc-active">ativo</td>
+        </tr>
+        <tr>
+          <td class="row-hd">(v) Webhook deactivation report</td>
+          <td style="text-align:center;"><span class="fase-label fase2" style="font-size:9.5px;">Fase 2</span></td>
+          <td class="gc-empty">—</td>
+          <td class="gc-empty">—</td>
+          <td class="gc-build">construção</td>
+          <td class="gc-active">ativo — c7→0</td>
+          <td class="gc-active">ativo</td>
+        </tr>
+        <tr>
+          <td class="row-hd">(vi) Self-service reativação CG (T1)</td>
+          <td style="text-align:center;"><span class="fase-label fase2" style="font-size:9.5px;">Fase 2</span></td>
+          <td class="gc-empty">—</td>
+          <td class="gc-empty">—</td>
+          <td class="gc-build">construção</td>
+          <td class="gc-build">construção</td>
+          <td class="gc-active">ativo</td>
+        </tr>
+        <tr style="border-top:2px solid #3b1066;">
+          <td class="row-hd" style="font-weight:800;color:#3b1066;">Total tickets/mês (estimado)</td>
+          <td class="gc-empty" style="font-size:10px;color:#888;">base</td>
+          <td class="gc-impact">~99</td>
+          <td class="gc-impact">~85</td>
+          <td class="gc-impact">~71</td>
+          <td class="gc-impact">~53</td>
+          <td class="gc-impact">~51</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /tab-main -->
+
+<!-- ══════════════════════════════════
+     TAB 2 — ANÁLISE DETALHADA
+══════════════════════════════════ -->
+<div id="tab-analise" class="tab-page">
+
+<!-- FOCO 1 -->
+<div id="foco1" class="sec narrow">
   <div class="foco-banner f1">
     <div class="fi">🎯</div>
     <div>
-      <h2>Foco 1 — Escalamentos Indevidos</h2>
-      <p>30 tickets em fev/26 (referência mais precisa — monitoramento ativo iniciado neste mês) chegaram ao BUNOPS sem precisar de ação de Engenharia. São erros de triagem do CX — corrigíveis com treinamento e documentação.</p>
+      <h2>Fase 1 — Escalamentos Indevidos</h2>
+      <p>42 tickets em fev/26 (referência mais precisa — monitoramento ativo iniciado neste mês) chegaram ao BUNOPS sem precisar de ação de Engenharia. São erros de triagem do CX — corrigíveis com treinamento e documentação.</p>
     </div>
   </div>
 
   <div class="block">
     <div class="stitle"><span class="snum r">1.1</span> Sete causas raiz de escalamento incorreto</div>
     <p style="font-size:13px;color:#555;margin-bottom:16px">
-      Leitura integral dos 36 tickets com <span class="badge br">NO ENG OPS</span> ou <span class="badge br">Won't Do</span> no período Dez/Jan/Fev — descrição e comentários completos de cada ticket.
+      Leitura integral dos 78 tickets com <span class="badge br">NO ENG OPS</span> ou <span class="badge br">Won't Do</span> no período Dez/Jan/Fev.
+      Causa raiz atribuída com base na descrição e comentários completos de cada ticket — nunca inferida pelo título.
     </p>
 
     <div class="two-col">
       <div>
         <div class="pcard p1">
-          <div class="pct">30,6%</div>
-          <div class="ptitle">1. Canal errado — Wise</div>
-          <div class="pbody">Disputas transacionais, saldo, cancelamento de conta, spread, extrato detalhado, dados de emissor. Canal correto: <strong>CX da Wise via e-mail ou Zendesk</strong> (protocolo Weduka). Eng Ops não tem acesso às operações internas da Wise.<br><strong>11 tickets (3 meses)</strong></div>
-          <div class="tsm">Ex.: BUNOPS-11136, 11467, 11557, 11624, 12005, 12068, 12080, 12078</div>
+          <div class="pct">24%</div>
+          <div class="ptitle">1. Caso auto-resolvido / sem ação necessária</div>
+          <div class="pbody">Estorno já processado, sincronização de sistema (&lt;7 dias), ticket duplicado, cliente regularizou sozinho. CX escalou sem verificar o estado atual antes de abrir o ticket.<br><strong>~19 tickets (3 meses)</strong></div>
+          <div class="tsm">Ex.: BUNOPS-12177, 12117, 12065, 11823, 11722, 11264, 11116</div>
         </div>
         <div class="pcard p2">
-          <div class="pct">22,2%</div>
-          <div class="ptitle">2. Canal errado — #core-identity-helpdesk</div>
-          <div class="pbody">Conta Global "parcialmente ativa" com pendência cadastral: EDD pendente, nome incompatível, atualização em loop ("vimos que você já finalizou"). Canal correto: Slack <strong>#core-identity-helpdesk</strong>. Eng Ops não tem ação nesses fluxos.<br><strong>8 tickets (3 meses)</strong></div>
-          <div class="tsm">Ex.: BUNOPS-11765, 11773, 11977, 12025, 12108, 12115, 12139</div>
+          <div class="pct">22%</div>
+          <div class="ptitle">2. Canal errado — Wise CX ou responsabilidade Wise</div>
+          <div class="pbody">Canal correto é o <strong>CX da Wise via Weduka</strong> (disputas, cancelamentos, extratos, bloqueios ATM); ou decisão exclusivamente da Wise (elegibilidade, suspensão de cartão) — sem ação possível no Nu.<br><strong>~17 tickets (3 meses)</strong></div>
+          <div class="tsm">Ex.: BUNOPS-12400, 12421, 12067, 11778, 11345, 11219, 12005</div>
         </div>
         <div class="pcard p3">
-          <div class="pct">13,9%</div>
-          <div class="ptitle">3. Caso auto-resolvido / sem ação necessária</div>
-          <div class="pbody">Situação já estava resolvida no momento do escalamento: estorno processado, instalação concluída, cartão virtual criado. CX escalou sem verificar o estado atual do caso.<br><strong>5 tickets (3 meses)</strong></div>
-          <div class="tsm">Ex.: BUNOPS-11305, 11738, 11823, 12000, 12117</div>
+          <div class="pct">16%</div>
+          <div class="ptitle">3. Limitação de produto documentada</div>
+          <div class="pbody">Comportamento esperado do produto, sem inconsistência técnica. Reconhecimento facial exige câmera, liveness obrigatório, pré-autorização pendente, IOF atualizado, CPF com pendência fiscal bloqueando conversão.<br><strong>~12 tickets (3 meses)</strong></div>
+          <div class="tsm">Ex.: BUNOPS-12273, 12195, 11988, 11909, 11485, 11136</div>
         </div>
         <div class="pcard p4">
-          <div class="pct">13,9%</div>
-          <div class="ptitle">4. Limitação de produto</div>
-          <div class="pbody">Comportamento esperado do produto, sem inconsistência técnica: reconhecimento facial exige câmera, elegibilidade Wise segue critérios próprios, conversão bloqueada por pendência Receita Federal, cartão cancelado não pode ser reativado.<br><strong>5 tickets (3 meses)</strong></div>
-          <div class="tsm">Ex.: BUNOPS-11239, 11593, 11944, 11988, 12067</div>
+          <div class="pct">13%</div>
+          <div class="ptitle">4. Canal errado — #core-identity-helpdesk</div>
+          <div class="pbody">Conta Global "parcialmente ativa" com pendência cadastral (EDD, nome incompatível, atualização em loop). Canal correto: Slack <strong>#core-identity-helpdesk</strong>.<br><strong>~10 tickets (3 meses)</strong></div>
+          <div class="tsm">Ex.: BUNOPS-12139, 12122, 12115, 11977, 11773, 11765, 10801</div>
         </div>
       </div>
       <div>
         <div class="pcard p5">
-          <div class="pct">8,3%</div>
-          <div class="ptitle">5. Fila errada — Detran</div>
-          <div class="pbody">Questões de IPVA/licenciamento sem ação possível de Eng Ops: timeout por falta de resposta do agente, cliente que pagou veículo errado (erro próprio), intermitência pontual do sistema Detran resolvida sozinha.<br><strong>3 tickets (3 meses)</strong></div>
-          <div class="tsm">Ex.: BUNOPS-11834, 11975, 12056</div>
+          <div class="pct">8%</div>
+          <div class="ptitle">5. Falta de verificação prévia</div>
+          <div class="pbody">Agente escalou sem consultar ferramentas de backoffice disponíveis (Shuffle, painel interno). Status do eSIM, bloqueio de cartão, endereço inválido — informações acessíveis antes do escalamento.<br><strong>~6 tickets (3 meses)</strong></div>
+          <div class="tsm">Ex.: BUNOPS-12305, 11953, 10757, 10688, 10423, 10250</div>
         </div>
         <div class="pcard p6">
-          <div class="pct">8,3%</div>
-          <div class="ptitle">6. Falta de verificação prévia</div>
-          <div class="pbody">Agente escalou sem checar informação disponível no BO/app: botão "incluir saldo" estava na próxima tela do fluxo, chip aparecia bloqueado na UI mas estava ativo (bloqueio era via app), cobranças de exercícios fiscais diferentes não foram conferidas antes do escalamento.<br><strong>3 tickets (3 meses)</strong></div>
-          <div class="tsm">Ex.: BUNOPS-11585, 11953, 12162</div>
+          <div class="pct">7%</div>
+          <div class="ptitle">6. Fila errada — Detran</div>
+          <div class="pbody">Ticket de competência do órgão de trânsito (IPVA, licenciamento, multa). Sem inconsistência interna no Nubank — Eng Ops não tem ação possível.<br><strong>~5 tickets (3 meses)</strong></div>
+          <div class="tsm">Ex.: BUNOPS-12309, 12261, 12162, 11975, 11834</div>
         </div>
         <div class="pcard p7">
-          <div class="pct">2,8%</div>
-          <div class="ptitle">7. Canal errado — Processo interno (rollout)</div>
-          <div class="pbody">Agente escalou spread cobrado indevidamente a cliente UV sem saber que o fluxo correto é inclusão manual na planilha de rollout de spread zero — processo interno que não passa pelo Eng Ops.<br><strong>1 ticket (3 meses)</strong></div>
-          <div class="tsm">Ex.: BUNOPS-11728</div>
+          <div class="pct">4%</div>
+          <div class="ptitle">7. Processo interno ou SLA desconhecido</div>
+          <div class="pbody">Agente escalou sem seguir fluxo documentado (ex: planilha de rollout de spread) ou desconhecia prazo esperado do processo (ex: IPVA não agenda parcelas automaticamente).<br><strong>~3 tickets (3 meses)</strong></div>
+          <div class="tsm">Ex.: BUNOPS-12138, 11728, 12093</div>
         </div>
 
         <div class="insight" style="margin-top:16px">
-          <strong>💡 Insight principal:</strong> As causas 1, 2 e 7 (canal errado) somam <strong>53%</strong> dos indevidos e são corrigíveis com um único guia de triagem atualizado. Os padrões 3 e 6 (auto-resolvido + falta de verificação, 22%) apontam para ausência de checklist mínimo antes do escalamento. A causa 5 (Detran, 8%) sugere critério de entrada na fila mais restritivo.
+          <strong>💡 Insight principal:</strong> Auto-resolvido (24%) e canais errados — Wise + core-identity (35%) concentram <strong>~59% dos indevidos</strong> e são corrigíveis com checklist de troubleshooting antes do escalamento e guia de triagem de canais atualizado. Limitação de produto (16%) aponta lacuna de treinamento sobre regras de negócio.
         </div>
       </div>
     </div>
@@ -527,65 +895,172 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
 
 <hr class="div">
 
-<!-- ══════════════════════════════════
-     SEÇÃO 2 — FOCO 2: DEVIDOS
-══════════════════════════════════ -->
+<!-- FOCO 2 -->
 <div id="foco2" class="sec narrow">
-
   <div class="foco-banner f2">
     <div class="fi">⚙️</div>
     <div>
-      <h2>Foco 2 — Devidos: Oportunidades de Melhoria</h2>
-      <p>255 tickets (88%) chegaram com razão válida — mas o volume pode ser reduzido. A análise por categoria revela bugs recorrentes, processos manuais e casos que o CX poderia resolver sem o BUNOPS.</p>
+      <h2>Fase 2 — Devidos: Oportunidades de Melhoria</h2>
+      <p>~220 tickets (74%) chegaram com razão válida — mas o volume pode ser reduzido. <strong>Deep-dive em 190 tickets de c1 a c6 revelou que ~47% das escaladas são tecnicamente evitáveis:</strong> processo existente não seguido, self-service disponível não orientado, ou caso auto-resolvido antes da abertura do ticket.</p>
     </div>
   </div>
 
   <div class="block">
-    <div class="stitle"><span class="snum g">2.1</span> Análise por categoria — Sub-causas e ação típica do Eng</div>
+    <div class="stitle"><span class="snum g">2.1</span> Análise por categoria — Sub-padrões e escaladas evitáveis (deep-dive Dez–Fev)</div>
     <table>
       <thead>
         <tr>
           <th>Categoria</th>
-          <th>Sub-causas mais comuns</th>
+          <th>Técnicos (Eng Ops necessário)</th>
+          <th>Evitáveis (processo/info disponível)</th>
           <th>Ação típica do Eng</th>
-          <th>Complexidade</th>
+          <th style="white-space:nowrap">Complexidade</th>
+          <th style="white-space:nowrap">% Evitável</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>[CG] Cliente UV sem acesso</strong><br><span style="color:#888;font-size:11px">68 devidos · 27% do total</span></td>
-          <td><ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8"><li>Conta cancelada → reativação necessária</li><li>"Não elegível" com discrepância Wise/Nu</li><li>Bug: sem moeda disponível no fluxo</li><li>Bloqueio MCA/SCA (reconhecimento facial)</li><li>Cartão Wise bloqueado de longa data</li></ul></td>
-          <td style="font-size:12px">Reativação via Wise API; investigação de logs; contato Wise; limpeza de cache</td>
+          <td><strong>[CG] Cliente UV sem acesso</strong><br><span style="color:#888;font-size:11px">26 devidos · 16%</span></td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Reativação de CG cancelada — sem self-service (7)</li>
+              <li>Inconsistência de estado Nu ↔ Wise (5)</li>
+              <li>Problema de device/certificado após troca de aparelho (5)</li>
+              <li>Bug de backend/cache no enrollment (3)</li>
+              <li>Bloqueio pós-ação de segurança · liveness excepcional (3)</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Delay 1–2 dias de elegibilidade pós-espaço família — CX deveria orientar aguardar <span class="badge bg" style="margin-left:4px">2 tickets</span></li>
+              <li>E-mail de encerramento da Wise — CX poderia verificar no Shuffle sem acionar Eng Ops <span class="badge bg" style="margin-left:4px">1 ticket</span></li>
+            </ul>
+          </td>
+          <td style="font-size:12px">Reativação via backend/Wise API; remoção de restrições; correção device-id; debug de cache; coordenação com time de fraude</td>
           <td><span class="badge bo">Média-Alta</span></td>
+          <td><span class="badge bg">12% 🟢</span></td>
         </tr>
         <tr>
-          <td><strong>[CG] Saldo e Conversão</strong><br><span style="color:#888;font-size:11px">49 devidos · 19%</span></td>
-          <td><ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8"><li>Spread cobrado → inclusão no rollout (planilha manual)</li><li>Botão "incluir saldo" desativado (bug)</li><li>Moeda específica bloqueada (ex: COP)</li><li>Saldo não adicionado há semanas (bug persistente)</li></ul></td>
-          <td style="font-size:12px">Inclusão em rollout (processo manual); investigação de bug de moeda; contato Wise</td>
+          <td><strong>[CG] Saldo e Conversão</strong><br><span style="color:#888;font-size:11px">52 tickets · 24%</span></td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Bug reprocessamento de conta (botão "Adicionar saldo" inativo)</li>
+              <li>Intermitência técnica confirmada</li>
+              <li>Estorno manual de conversão travada</li>
+              <li>Investigação com Wise (saldo negativo, CPF, moeda)</li>
+              <li>Estorno de IOF (aprovação manual)</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li><strong>RFI em andamento</strong> — CX não verifica status antes de escalar <span class="badge bo" style="margin-left:4px">10 tickets</span></li>
+              <li>Spread fora do rollout — planilha de exceção existe mas não é seguida <span class="badge bo" style="margin-left:4px">7 tickets</span></li>
+              <li>Conversão auto-resolvida antes do ticket ser aberto (3)</li>
+              <li>Dúvida de UX/produto — info disponível internamente (3)</li>
+            </ul>
+            <div style="margin-top:8px;padding:8px 10px;background:#fff8e1;border-left:3px solid #F9A825;border-radius:0 6px 6px 0;font-size:11.5px;line-height:1.6">
+              <strong>📋 RFI:</strong> Conversão travada porque cliente está em verificação de documentos da Wise. CX escala achando que é bug — Eng Ops apenas confirma status. <em>Retrabalho informacional puro.</em> RFC de in-app tag em elaboração.
+            </div>
+          </td>
+          <td style="font-size:12px">Reprocessamento de conta; estorno manual; investigação Wise; inclusão em rollout</td>
           <td><span class="badge bo">Média</span></td>
+          <td><span class="badge br">58%</span></td>
         </tr>
         <tr>
-          <td><strong>[CG] Transações com Cartão</strong><br><span style="color:#888;font-size:11px">32 devidos · 13%</span></td>
-          <td><ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8"><li>Chip bloqueado por erro de senha (ATM)</li><li>Contestação de compra desconhecida</li><li>Saque ATM com erro (rede Wise)</li></ul></td>
-          <td style="font-size:12px">Desbloqueio de chip; investigação + contato Wise</td>
+          <td><strong>[CG] Transações Cartão</strong><br><span style="color:#888;font-size:11px">35 tickets · 16%</span></td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>PIN block — reset/desbloqueio direto por Eng Ops (8)</li>
+              <li>Cartão suspenso — estado anômalo investigado (2)</li>
+              <li>Bug sistema/Shuffle / push confirmation (3)</li>
+              <li>Estorno recebido mas não exibido no feed (2)</li>
+              <li>Falha de conversão BRL — CPF pendente (1) / certificado inválido (1)</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Compras canceladas / falha conversão → Wise 2nd level (8) — agente poderia abrir diretamente</li>
+              <li>Timeout de captura Wise (regra 7 dias) — comportamento esperado (2)</li>
+              <li>Divergência de saldo por holds — informacional (2)</li>
+              <li>Bloqueio regulatório / cancelamento automático (2)</li>
+            </ul>
+          </td>
+          <td style="font-size:12px">Reset de PIN (Eng Ops + Wise); investigação bug; contato Wise para cartão suspenso</td>
           <td><span class="badge bg">Baixa-Média</span></td>
+          <td><span class="badge bo">46%</span></td>
         </tr>
         <tr>
-          <td><strong>[eSIM] Compatibilidade</strong><br><span style="color:#888;font-size:11px">29 devidos · 97% precisão</span></td>
-          <td><ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8"><li>QR code não instala → reemissão de eSIM</li><li>Dispositivo novo sem suporte</li><li>Troca de celular → eSIM anterior desativado</li></ul></td>
-          <td style="font-size:12px">Reemissão via Gigs; verificação de compatibilidade</td>
+          <td><strong>[eSIM] Compatibilidade</strong><br><span style="color:#888;font-size:11px">31 tickets · 14%</span></td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Ativação bloqueada — assinatura não criada no backend (3)</li>
+              <li>eSIM sem sinal em destino — parceira Gigs / cobertura (2)</li>
+              <li>Bug de navegação app / deeplink não abre tela (1)</li>
+              <li>Divergência Shuffle vs. estado real / delay (1)</li>
+              <li>Outros casos técnicos com ação confirmada (8)</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Reemissão rotineira via Shuffle — disponível ao CS (6)</li>
+              <li>Inelegibilidade por política de produto (family members, moeda) (4)</li>
+              <li>Auto-resolvido / duplicata (3)</li>
+              <li>Orientação de instalação por tipo de dispositivo (3)</li>
+            </ul>
+          </td>
+          <td style="font-size:12px">Criação manual de assinatura backend; acionamento Gigs; investigação de logs</td>
           <td><span class="badge bg">Baixa</span></td>
+          <td><span class="badge bo">52%</span></td>
         </tr>
         <tr>
-          <td><strong>[CG] Entrega do Cartão</strong><br><span style="color:#888;font-size:11px">22 devidos · 9%</span></td>
-          <td><ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8"><li>Cartões suspensos após mudança/cancel. NuConta</li><li>Erro ao criar novo cartão virtual (bug)</li><li>Cartão em trânsito/devolvido</li></ul></td>
-          <td style="font-size:12px">Reativação via Wise; resolução de bug; gestão logística</td>
+          <td><strong>[CG] Entrega do Cartão</strong><br><span style="color:#888;font-size:11px">23 tickets · 10%</span></td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Inconsistência técnica no pedido / estado do cartão via Wise (4)</li>
+              <li>Cartão suspenso em viagem — remoção via Wise (2)</li>
+              <li>Cartão não entregue / status preso — intervenção Wise ou Mobi (3)</li>
+              <li>PIN block — reset por Eng Ops (4)</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Cancelamento de conta global — fila errada, processo é via Zendesk/Wise (4)</li>
+              <li>Cartão perdido / erro de endereço do agente — operacional (3)</li>
+              <li>Status de entrega disponível no Shuffle, agente não verificou (2)</li>
+              <li>Ticket com dados incorretos (customer-id errado) (1)</li>
+            </ul>
+          </td>
+          <td style="font-size:12px">Reativação via Wise; reset de PIN; gestão logística com Mobi</td>
           <td><span class="badge bo">Média</span></td>
+          <td><span class="badge bo">43%</span></td>
         </tr>
         <tr>
-          <td><strong>[Seguro Viagem UV]</strong><br><span style="color:#888;font-size:11px">23 devidos · 0% indevido ✅</span></td>
-          <td><ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8"><li>Certificado de acompanhante não enviado</li><li>Erro na apólice (dados incorretos)</li></ul></td>
-          <td style="font-size:12px">Reenvio/correção de certificado; ajuste de apólice</td>
+          <td><strong>[Seguro Viagem UV]</strong><br><span style="color:#888;font-size:11px">23 tickets · 10%</span></td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Bug de validação de campo — emissão bloqueada, Chubb emite manual (2)</li>
+              <li>Certificado de acompanhante não gerado — investigação Chubb (2)</li>
+              <li>Botão de reenvio genuinamente indisponível (1)</li>
+              <li>Restrição Chubb de prazo (&gt;60 dias) — exceção coordenada (1)</li>
+              <li>Apólice não localizada pela Chubb (1)</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8">
+              <li>Self-service de reenvio disponível no app (Minhas Reservas → Reenviar Email) não orientado (3)</li>
+              <li>Elegibilidade não verificada antes de escalar (2)</li>
+              <li>Instabilidade transiente — auto-resolvida (2)</li>
+              <li>Limitação Chubb com workaround documentado / duplicata / fora escopo (5)</li>
+            </ul>
+          </td>
+          <td style="font-size:12px">Coordenação manual com Chubb; reenvio/correção de certificado</td>
+          <td><span class="badge bg">Baixa</span></td>
+          <td><span class="badge br">65%</span></td>
+        </tr>
+        <tr>
+          <td><strong>[CG] Deactivation report</strong><br><span style="color:#888;font-size:11px">11 devidos · 5%</span></td>
+          <td><ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.8"><li>Planilha Wise enviada ~3x/mês com contas a desativar</li><li>Cada conta gera 1 ticket BUNOPS para processamento</li></ul></td>
+          <td style="font-size:12px">Desativação de conta via Wise API; processamento de lista em lote</td>
           <td><span class="badge bg">Baixa</span></td>
         </tr>
         <tr>
@@ -598,164 +1073,41 @@ tr:last-child td { border-bottom: none; } tr:hover td { background: #faf5ff; }
     </table>
 
     <div class="insight green">
-      <strong>💡 Insight:</strong> <strong>eSIM</strong> e <strong>Seguro Viagem UV</strong> têm alta precisão (97% e 100%) e ação bem definida. Oportunidade: habilitar CX a fazer reemissão de eSIM sem BUNOPS. <strong>Conta Global UV sem acesso</strong> e <strong>Saldo e Conversão</strong> concentram bugs recorrentes — resolver na raiz reduziria o volume estruturalmente.
+      <strong>💡 Insight (deep-dive Dez–Fev · 190 tickets · c1–c6):</strong> Mesmo nos tickets "devidos", <strong>~47% das escaladas poderiam ter sido evitadas</strong> — o agente tinha processo disponível, a resposta era informacional ou o caso se auto-resolveu. C1 é a exceção positiva: 88% são genuinamente técnicos (reativação, bug, device), com apenas 12% evitáveis. Três oportunidades transversais concentram o restante: <strong>(1)</strong> Fluxos Wise não seguidos em c2/c3 — RFI, Wise 2nd level, timeout captura (≈35% dos evitáveis); <strong>(2)</strong> Self-service disponível não orientado em c4/c6 — reemissão via Shuffle, reenvio via app (≈25%); <strong>(3)</strong> Fila errada em c5/c3 — cancelamentos de conta e transações roteados incorretamente (≈20%). Endereçar esses três pontos pode reduzir o volume de c2–c6 em até 40%.
     </div>
   </div>
 </div>
 
-<hr class="div">
-
-<!-- ══════════════════════════════════
-     SEÇÃO 3 — PLANO DE AÇÃO
-══════════════════════════════════ -->
-<div id="plano" class="sec narrow">
-  <div class="stitle"><span class="snum">3</span> Plano de Ação</div>
-  <p style="font-size:13px;color:#555;margin-bottom:18px">
-    <strong>Legenda:</strong>
-    ✅ Executável imediatamente &nbsp;|&nbsp;
-    🔍 Precisa investigação adicional &nbsp;|&nbsp;
-    ❓ Avaliar com o time
-  </p>
-
-  <!-- FOCO 1 -->
-  <div class="block" style="border-left: 4px solid #C62828">
-    <div class="stitle" style="color:#C62828;border-color:#fce4e4;font-size:14px">
-      🎯 Foco 1 — Dimensão CX: reduzir escalamentos indevidos
-    </div>
-
-    <div class="aitem ok">
-      <div class="aicon">✅</div>
-      <div>
-        <span class="atitle">Guia de triagem: quando acionar BUNOPS × #core-identity-helpdesk × Wise CX</span>
-        Criar (ou atualizar) árvore de decisão clara para os três canais mais confundidos. Conta "parcialmente ativa" com EDD/cadastro pendente → <strong>#core-identity-helpdesk</strong>. Disputas, spread, saldo, extrato, dados de emissor, cancelamento de conta → <strong>Wise CX via e-mail/Zendesk</strong>. Nenhum desses casos deve passar pelo BUNOPS. Cobertura: causas 1 + 2 = 53% dos indevidos.
-      </div>
-    </div>
-
-    <div class="aitem ok">
-      <div class="aicon">✅</div>
-      <div>
-        <span class="atitle">Checklist de verificação mínima antes do escalamento</span>
-        Antes de abrir ticket no BUNOPS, verificar: (1) estado atual do caso no BO/Shuffle, (2) se o cliente já resolveu sozinho ou se há ação pendente, (3) se a situação é limitação conhecida do produto. Elimina causas 3 (auto-resolvido) + 6 (falta de verificação prévia) = 22% dos indevidos.
-      </div>
-    </div>
-
-    <div class="aitem ok">
-      <div class="aicon">✅</div>
-      <div>
-        <span class="atitle">Workshop: sub-padrões de conta "parcialmente ativa"</span>
-        Treinar nos sub-casos específicos: EDD pendente, nome incompatível (exige alteração na Wise antes de qualquer ação), atualização em loop ("vimos que você já finalizou"). Cada sub-padrão tem canal e procedimento distintos — confundir os três gera escalamentos duplos.
-      </div>
-    </div>
-
-    <div class="aitem ok">
-      <div class="aicon">✅</div>
-      <div>
-        <span class="atitle">FAQ de limitações de produto no knowledge base do CX</span>
-        Criar/atualizar base de conhecimento com as limitações mais recorrentes: reconhecimento facial exige câmera, elegibilidade Wise segue critérios proprietários (Nubank não controla), conversão bloqueada por pendência Receita Federal não é bug, cartão cancelado não pode ser reativado. Cobertura: causa 4 = 14% dos indevidos.
-      </div>
-    </div>
-
-    <div class="aitem ok">
-      <div class="aicon">✅</div>
-      <div>
-        <span class="atitle">Documentar processo de rollout de spread zero para CX</span>
-        O fluxo de inclusão na planilha de rollout de spread zero não é conhecido pelo CX — escalamentos chegam ao BUNOPS sem necessidade. Documentar o processo e disponibilizar no knowledge base. Cobertura: causa 7 (pequena, mas 100% evitável).
-      </div>
-    </div>
-
-    <div class="aitem find">
-      <div class="aicon">🔍</div>
-      <div>
-        <span class="atitle">Verificar documentação existente de Wise × Nu antes de criar novo material</span>
-        Antes de criar novos guias, mapear o que já existe no Confluence/Notion. Se documentação existe mas não é seguida, o problema é de divulgação e aderência — não de criação de conteúdo.
-      </div>
-    </div>
-
-    <div class="aitem ask">
-      <div class="aicon">❓</div>
-      <div>
-        <span class="atitle">Detran: critério de elegibilidade para entrar na fila BUNOPS</span>
-        50% dos tickets de Detran na fila são indevidos. Avaliar critério mais restritivo de entrada ou adicionar triagem inicial antes da criação do ticket para filtrar casos sem ação possível.
-      </div>
-    </div>
-  </div>
-
-  <!-- FOCO 2 -->
-  <div class="block" style="border-left: 4px solid #2E7D32">
-    <div class="stitle" style="color:#2E7D32;border-color:#c8e6c9;font-size:14px">
-      ⚙️ Foco 2 — Dimensão Produto/Processo: reduzir volume de tickets devidos
-    </div>
-
-    <div class="aitem find">
-      <div class="aicon">🔍</div>
-      <div>
-        <span class="atitle">Bug: conta "parcialmente ativa" com loop de atualização cadastral</span>
-        App exibe "vimos que você já finalizou" mas conta permanece bloqueada. Investigar se há bug no fluxo de EDD que prende o usuário sem caminho de saída pelo app.
-      </div>
-    </div>
-
-    <div class="aitem ok">
-      <div class="aicon">✅</div>
-      <div>
-        <span class="atitle">Melhorar mensagem de erro para conta "parcialmente ativa"</span>
-        Substituir "atualizar dados" genérico por direcionamento ao canal correto ou identificação do sub-tipo de pendência. Reduz tickets que chegam sem contexto acionável.
-      </div>
-    </div>
-
-    <div class="aitem find">
-      <div class="aicon">🔍</div>
-      <div>
-        <span class="atitle">Processo de spread zero: rollout manual via planilha</span>
-        Clientes UV com spread cobrado indevidamente. Investigar: quantos UV ainda não estão no rollout? Processo atual (planilha manual) é escalável? Oportunidade de automação ou inclusão automática.
-      </div>
-    </div>
-
-    <div class="aitem find">
-      <div class="aicon">🔍</div>
-      <div>
-        <span class="atitle">eSIM: avaliar self-service de reemissão pelo CX</span>
-        97% dos tickets de eSIM são devidos e a ação mais comum é reemissão via Gigs. Avaliar se o CX pode acessar a ferramenta diretamente sem o BUNOPS — reduz tempo de resolução e volume na fila.
-      </div>
-    </div>
-
-    <div class="aitem find">
-      <div class="aicon">🔍</div>
-      <div>
-        <span class="atitle">Cartão suspenso após mudança de NuConta: possível bug de lógica</span>
-        Múltiplos tickets mostram cartão Wise suspenso após desativação/reativação de NuConta. Investigar se é regra intencional ou bug — se bug, corrigir elimina tickets recorrentes.
-      </div>
-    </div>
-
-    <div class="aitem ask">
-      <div class="aicon">❓</div>
-      <div>
-        <span class="atitle">CX deveria acionar #core-identity diretamente para casos de EDD?</span>
-        Fluxo atual: CX → BUNOPS → Eng redireciona para #core-identity → outro time atua. Avaliar se CX poderia acionar diretamente, eliminando a etapa intermediária. Depende de decisão de processo e permissões.
-      </div>
-    </div>
-  </div>
-</div>
+</div><!-- /tab-analise -->
 
 <div style="text-align:center;font-size:11px;color:#aaa;padding:16px 0 36px">
   Análise gerada com Claude AI &nbsp;·&nbsp; Dados: Jira BUNOPS (nubank.atlassian.net) &nbsp;·&nbsp; Dez/2025–Fev/2026
 </div>
 
-<!-- ══════════ SCRIPT: SVG TREE CONNECTORS ══════════ -->
+<!-- ══════════ SCRIPT ══════════ -->
 <script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'main') setTimeout(drawLines, 50);
+}
+
 function drawLines() {
-  const wrap = document.getElementById('tree-wrap');
-  const svg  = document.getElementById('svg-lines');
+  var wrap = document.getElementById('tree-wrap');
+  var svg  = document.getElementById('svg-lines');
   if (!wrap || !svg) return;
 
-  const wr = wrap.getBoundingClientRect();
+  var wr = wrap.getBoundingClientRect();
   svg.setAttribute('width',  wrap.scrollWidth);
   svg.setAttribute('height', wrap.scrollHeight);
   svg.innerHTML = '';
 
   function box(id) {
-    const el = document.getElementById(id);
+    var el = document.getElementById(id);
     if (!el) return null;
-    const r = el.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
     return {
       cx: r.left - wr.left + wrap.scrollLeft + r.width / 2,
       ty: r.top  - wr.top  + wrap.scrollTop,
@@ -764,11 +1116,11 @@ function drawLines() {
   }
 
   function elbowDown(fromId, toId, color, dash) {
-    const f = box(fromId), t = box(toId);
+    var f = box(fromId), t = box(toId);
     if (!f || !t) return;
-    const my = f.by + (t.ty - f.by) / 2;
-    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    p.setAttribute('d', `M ${f.cx} ${f.by} V ${my} H ${t.cx} V ${t.ty}`);
+    var my = f.by + (t.ty - f.by) / 2;
+    var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', 'M ' + f.cx + ' ' + f.by + ' V ' + my + ' H ' + t.cx + ' V ' + t.ty);
     p.setAttribute('stroke', color || '#C4A8E0');
     p.setAttribute('stroke-width', 2);
     p.setAttribute('fill', 'none');
@@ -778,19 +1130,18 @@ function drawLines() {
     svg.appendChild(p);
   }
 
-  // L1 → L2
   elbowDown('n-bunops', 'n-mobility');
   elbowDown('n-bunops', 'n-outras', '#C4A8E0');
-
-  // L2 → L3
   elbowDown('n-mobility', 'n-devidos',   '#2E7D32', true);
   elbowDown('n-mobility', 'n-indevidos', '#C62828', true);
-
-  // L3 → L4 Devidos
-  ['c1','c2','c3','c4','c5','c6','c7'].forEach(id => elbowDown('n-devidos', id, '#2E7D32'));
-
-  // L3 → L4 Indevidos
-  ['p1','p2','p3','p4','p5','p6','p7'].forEach(id => elbowDown('n-indevidos', id, '#C62828'));
+  ['c1','c2','c3','c4','c5','c6','c7','c8'].forEach(function(id) { elbowDown('n-devidos', id, '#2E7D32'); });
+  elbowDown('c1', 'c1a', '#2E7D32'); elbowDown('c1', 'c1b', '#2E7D32');
+  elbowDown('c2', 'c2a', '#2E7D32'); elbowDown('c2', 'c2b', '#2E7D32');
+  elbowDown('c3', 'c3a', '#2E7D32'); elbowDown('c3', 'c3b', '#2E7D32');
+  elbowDown('c4', 'c4a', '#2E7D32'); elbowDown('c4', 'c4b', '#2E7D32');
+  elbowDown('c5', 'c5a', '#2E7D32'); elbowDown('c5', 'c5b', '#2E7D32');
+  elbowDown('c6', 'c6a', '#2E7D32'); elbowDown('c6', 'c6b', '#2E7D32');
+  ['p1','p2','p3','p4','p5','p6','p7'].forEach(function(id) { elbowDown('n-indevidos', id, '#C62828'); });
 }
 
 window.addEventListener('load', drawLines);
