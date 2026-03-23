@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report Eng Ops Semanal — 15 a 21/03/2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f7f4fc;color:#2d2d2d;min-width:900px}
+.top-nav{position:sticky;top:0;z-index:100;background:#3b1066;display:flex;align-items:center;padding:0 28px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.nav-brand{font-size:12.5px;font-weight:700;color:#E0C8FF;padding:13px 18px 13px 0;border-right:1px solid rgba(255,255,255,.15);margin-right:6px;white-space:nowrap}
+.tab-btn{background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;color:rgba(255,255,255,.65);font-size:12px;padding:13px 14px;white-space:nowrap;transition:color .15s;font-family:inherit}
+.tab-btn:hover{color:white}.tab-btn.active{color:white;border-bottom-color:#C4A8E0}
+.tab-page{display:none}.tab-page.active{display:block}
+.page{max-width:1080px;margin:0 auto;padding:28px 24px 60px}
+.header{background:#fff;border-left:6px solid #5A1E82;border-radius:0 10px 10px 0;padding:20px 28px;margin-bottom:24px;box-shadow:0 2px 8px rgba(90,30,130,.10)}
+.header h1{font-size:22px;font-weight:800;color:#3D1466;margin-bottom:4px}
+.header .subtitle{font-size:12px;color:#888}.header .subtitle span{color:#5A1E82;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.card{background:#fff;border-radius:10px;padding:16px 20px;box-shadow:0 1px 6px rgba(0,0,0,.07);border-top:3px solid #ccc}
+.card.c-total{border-top-color:#5A1E82}.card.c-devidos{border-top-color:#4CAF50}
+.card.c-indevidos{border-top-color:#E53935}.card.c-tratativa{border-top-color:#FFB74D}
+.card .value{font-size:32px;font-weight:800;color:#3D1466;line-height:1;margin-bottom:4px}
+.card.c-indevidos .value{color:#E53935}.card.c-devidos .value{color:#2e7d32}.card.c-tratativa .value{color:#e67e22}
+.card .label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.card .sub{font-size:11px;color:#aaa;margin-top:4px}
+h2{font-size:15px;font-weight:700;color:#3D1466;margin:28px 0 14px}
+.sec-badge{font-size:11px;font-weight:600;color:#888;background:#f0eef5;padding:2px 8px;border-radius:8px;margin-left:8px}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.chart-box{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.chart-box h3{font-size:12.5px;font-weight:600;color:#444;text-align:center;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{background:#f3eeff;color:#5A1E82;font-size:11px;text-transform:uppercase;padding:8px 10px;text-align:left}
+td{padding:8px 10px;border-bottom:1px solid #f0eef5;vertical-align:top}
+tr:hover td{background:#faf6ff}.row-tratativa td{background:#fffef8!important}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.b-devido{background:#e8f5e9;color:#1e8a3e}.b-indevido{background:#fde8e8;color:#c0392b}
+.b-tratativa{background:#fff8e1;color:#e67e22}.b-rt{background:#ede5f8;color:#5A1E82}
+.table-wrap{background:#fff;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.07);overflow:hidden;margin-bottom:20px}
+.alert-box{background:#fff8e1;border-left:4px solid #FFB74D;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#7d5700;margin-bottom:20px}
+.insight-box{background:#f0f7ff;border-left:4px solid #1e88e5;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#0d47a1;margin:16px 0}
+.legend-rt{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;margin-bottom:12px;align-items:center}
+.ldot{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <div class="nav-brand">Mobility – Travel &nbsp;| Eng Ops</div>
+  <button class="tab-btn active" onclick="switchTab('semana',this)">📋 Semana 15–21/03</button>
+  <button class="tab-btn" onclick="switchTab('mensal',this)">📆 Visão Mensal + Reporters</button>
+  <button class="tab-btn" onclick="switchTab('sla',this)">⏱ SLA</button>
+</nav>
+
+<!-- TAB 1 -->
+<div id="tab-semana" class="tab-page active"><div class="page">
+  <div class="header">
+    <h1>Mobility – Travel &nbsp;|&nbsp; Semana 15–21/03/2026</h1>
+    <div class="subtitle">Projeto BUNOPS · Filas <span>Travel OTA + Travel TXP</span> · Gerado em 23/03/2026</div>
+  </div>
+  <div class="alert-box">⚠️ <strong>Prévia parcial:</strong> 23 dos 32 tickets ainda em tratativa. Classificação completa disponível quando a semana fechar.</div>
+  <div class="cards">
+    <div class="card c-total"><div class="value">32</div><div class="label">Total de tickets</div><div class="sub">semana 15–21/03</div></div>
+    <div class="card c-devidos"><div class="value">2</div><div class="label">Devidos confirmados</div><div class="sub">engajamento legítimo</div></div>
+    <div class="card c-indevidos"><div class="value">7</div><div class="label">Indevidos confirmados</div><div class="sub">21.9% do total</div></div>
+    <div class="card c-tratativa"><div class="value">23</div><div class="label">Em tratativa</div><div class="sub">aguardando classificação</div></div>
+  </div>
+
+  <h2>1. Tendência — Últimas 4 Semanas</h2>
+  <div class="chart-row">
+    <div class="chart-box"><h3>Tickets — devidos · indevidos · em tratativa</h3><div style="position:relative;height:230px"><canvas id="chartBar"></canvas></div></div>
+    <div class="chart-box"><h3>% indevidos confirmados por semana</h3><div style="position:relative;height:230px"><canvas id="chartLine"></canvas></div></div>
+  </div>
+
+  <h2>2. Distribuição por Assunto (RT) <span class="sec-badge">últimas 4 semanas</span></h2>
+  <div class="legend-rt">
+    <span><span class="ldot" style="background:#8E24AA"></span>Conta Global</span>
+    <span><span class="ldot" style="background:#1E88E5"></span>Detran</span>
+    <span><span class="ldot" style="background:#00ACC1"></span>eSIM</span>
+    <em style="color:#aaa;font-size:10.5px">· cores exclusivas de RT — independentes de devidos/indevidos/tratativa</em>
+  </div>
+  <div class="chart-row">
+    <div class="chart-box"><h3>Volume por assunto — semana a semana</h3><div style="position:relative;height:240px"><canvas id="chartRTWeekly"></canvas></div></div>
+    <div class="chart-box"><h3>Semana atual — RT × classificação</h3><div style="position:relative;height:240px"><canvas id="chartRTCur"></canvas></div></div>
+  </div>
+
+  <h2>3. Deep-Dive — Devidos &amp; Em Tratativa <span class="sec-badge">2 confirmados · 23 em tratativa</span></h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Ticket</th><th>Status</th><th>Request Type</th><th>Análise</th><th>SLA</th></tr></thead>
+    <tbody><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12632' target='_blank'>BUNOPS-12632</a></td><td><span class='badge b-devido'>Devido</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Conta Global] Cliente Ultravioleta sem acesso a conta global</span></td><td style='color:#555'>Moeda USD da Conta Global cancelada com status "Não elegível pela Wise". Eng Ops identificou inconsistência de dados pontual no lado Nubank (não era decisão do parceiro). Ajuste manual realizado pela equipe — cliente voltou a operar normalmente.</td><td>95.0h</td></tr><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12544' target='_blank'>BUNOPS-12544</a></td><td><span class='badge b-devido'>Devido</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Detran] Problemas com pagamento e liquidação de débitos</span></td><td style='color:#555'>IPVA + licenciamento (R$439) debitado da conta mas não baixado no Detran. Caso de ouvidoria. Eng Ops consultou parceiro (Zapay), que confirmou regularização dos débitos com certidões como evidência. Encerrado sem estorno.</td><td>18.8h</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12693' target='_blank'>BUNOPS-12693</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Nubank Account Deactivations</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12684' target='_blank'>BUNOPS-12684</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Parcela única para pagamento</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12678' target='_blank'>BUNOPS-12678</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Problema com pagamento</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12673' target='_blank'>BUNOPS-12673</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Cliente pediu o cancelamento da conta Global a aproximadamente 1 mês, porem</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12667' target='_blank'>BUNOPS-12667</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Tentativa de conversão retida </td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12665' target='_blank'>BUNOPS-12665</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Consta o débito no extrato e no widget do detran, mas quando clica em baixa</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12661' target='_blank'>BUNOPS-12661</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>[Superset] All Nubank deactivations</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12650' target='_blank'>BUNOPS-12650</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Cliente teve acesso a conta, cancelou e solicita reativacao</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12638' target='_blank'>BUNOPS-12638</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Pagamento não baixado no Detran</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12633' target='_blank'>BUNOPS-12633</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Saque com a Conta Global</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12624' target='_blank'>BUNOPS-12624</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>eSIM</span></td><td style='color:#888'>Cliente não consegue ativar o seu E-sim de viagem</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12611' target='_blank'>BUNOPS-12611</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Cliente não consegue acesso à conta global. </td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12608' target='_blank'>BUNOPS-12608</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Cliente efetuou uma serie de pagamentos de multas referente a janeiro e fev</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12603' target='_blank'>BUNOPS-12603</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Cliente perdeu o parcelamento de Detran e teve Juros devido a um pagamento </td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12596' target='_blank'>BUNOPS-12596</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Cliente não consegue converter real para peso colombiano, o sistema informa</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12581' target='_blank'>BUNOPS-12581</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Senha com erro</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12578' target='_blank'>BUNOPS-12578</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>pagamentos não compensados no DETRAN</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12564' target='_blank'>BUNOPS-12564</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Tentativa excedida</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12548' target='_blank'>BUNOPS-12548</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Cliente sem acesso à conta</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12546' target='_blank'>BUNOPS-12546</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Pagamento do IPVA cancelado </td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12538' target='_blank'>BUNOPS-12538</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Sem acesso a conta global - Valdemir</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12535' target='_blank'>BUNOPS-12535</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Detran</span></td><td style='color:#888'>Cliente pagou 2x a mesma multa,nao consegue comprovante</td><td>—</td></tr><tr class='row-tratativa'><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12526' target='_blank'>BUNOPS-12526</a></td><td><span class='badge b-tratativa'>Em tratativa</span></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>Conta Global</span></td><td style='color:#888'>Cartão global não entregue</td><td>—</td></tr></tbody>
+  </table></div>
+
+  <h2>4. Deep-Dive — Indevidos <span class="sec-badge">7 confirmados</span></h2>
+  <div class="chart-row">
+    <div class="chart-box"><h3>Indevidos por assunto — semana a semana</h3><div style="position:relative;height:200px"><canvas id="chartIndevWeekly"></canvas></div></div>
+    <div class="chart-box"><div style="font-size:12px;padding:8px 4px;line-height:1.8">
+      <p>🔴 <strong>Conta Global — elegibilidade/downgrade (4):</strong> clientes sem UV tentando reativar conta global ou não informados sobre perda de acesso no downgrade. Gap no script CX.</p><br>
+      <p>🟠 <strong>eSIM — limitação de produto (1):</strong> renovação não suportada via Eng Ops. CX deve orientar self-service.</p><br>
+      <p>🟡 <strong>Conta Global — spread/Wise (2):</strong> dúvidas sobre spread e transações recusadas — responsabilidade canal Wise (Weduka).</p>
+    </div></div>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Ticket</th><th>Request Type</th><th>Análise</th><th>Causa Raiz</th><th>SLA Resolução</th></tr></thead>
+    <tbody><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12634' target='_blank'>BUNOPS-12634</a></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Conta Global] Cliente Ultravioleta sem acesso a conta global</span></td><td style='color:#555'>Solicitação duplicada — mesmo cliente e mesmo problema já registrados em BUNOPS-12557. Fechado como Duplicate sem análise adicional.</td><td><span class='badge' style='background:#ede7f6;color:#4527a0;white-space:normal;line-height:1.5'>8 · Ticket duplicado</span></td><td>7.5h</td></tr><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12588' target='_blank'>BUNOPS-12588</a></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Conta Global] Cliente Ultravioleta sem acesso a conta global</span></td><td style='color:#555'>Wise deixou de ofertar a Conta Global para esse CPF (balances USD/EUR/NZD com <code>provider_ineligible</code>, token <code>invalid_grant</code>). Existe resposta padrão [MCA] Provider ineligible que CX deveria ter aplicado sem escalar — ticket não deveria ter chegado a Eng Ops.</td><td><span class='badge' style='background:#fce4ec;color:#880e4f;white-space:normal;line-height:1.5'>5 · Processo interno não seguido / não documentado</span></td><td>43.1h</td></tr><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12557' target='_blank'>BUNOPS-12557</a></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Conta Global] Cliente Ultravioleta sem acesso a conta global</span></td><td style='color:#555'>Wise inelegível para esse CPF (balances <code>provider_ineligible</code>, token <code>invalid_grant</code>), independente do plano UV Família. Existe resposta padrão [MCA] Provider ineligible — CX deveria ter orientado o cliente diretamente sem acionar Eng Ops.</td><td><span class='badge' style='background:#fce4ec;color:#880e4f;white-space:normal;line-height:1.5'>5 · Processo interno não seguido / não documentado</span></td><td>54.8h</td></tr><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12541' target='_blank'>BUNOPS-12541</a></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[E-sim/Data Roaming] Casos não resolvidos pela Gigs</span></td><td style='color:#555'>Cliente queria antecipar renovação do eSIM para adequar ao calendário de viagens. Ciclo de 365 dias a partir da ativação é comportamento documentado do produto — CX deveria ter orientado o cliente diretamente sem escalar para Eng Ops.</td><td><span class='badge' style='background:#fce4ec;color:#880e4f;white-space:normal;line-height:1.5'>5 · Processo interno não seguido / não documentado</span></td><td>66.3h</td></tr><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12540' target='_blank'>BUNOPS-12540</a></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Conta Global] Cliente Ultravioleta sem acesso a conta global</span></td><td style='color:#555'>Solicitação duplicada — já havia ticket aberto (BUNOPS-12455) para o mesmo cliente. Cliente fez downgrade sem ser informado sobre perda de acesso à Conta Global e solicita reversão de câmbio. Redirecionado para o ticket original.</td><td><span class='badge' style='background:#ede7f6;color:#4527a0;white-space:normal;line-height:1.5'>8 · Ticket duplicado</span></td><td>0.9h</td></tr><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12533' target='_blank'>BUNOPS-12533</a></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Conta Global] Transações com Cartão Global</span></td><td style='color:#555'>Transação EUR→EUR via Wise recusada com "Tipo de transação não suportado". Eng Ops: Nubank não controla links de pagamento gerados na Wise; transações bem-sucedidas anteriores envolviam comerciante diferente. Caso escalado ao segundo nível (Wise) via Weduka.</td><td><span class='badge' style='background:#fff3e0;color:#e65100;white-space:normal;line-height:1.5'>2 · Canal errado — Wise CX</span></td><td>4.7h</td></tr><tr><td><a href='https://nubank.atlassian.net/browse/BUNOPS-12527' target='_blank'>BUNOPS-12527</a></td><td><span class='badge b-rt' style='white-space:normal;line-height:1.4'>[Conta Global] Saldo e Conversão entre moedas</span></td><td style='color:#555'>Spread cobrado a cliente UV em viagem. Eng Ops: casos de spread exigem adição do cliente no rollout via planilha específica — não via BUNOPS. Processo documentado não seguido pelo xpeer. Ticket indevido por desvio de processo.</td><td><span class='badge' style='background:#fce4ec;color:#880e4f;white-space:normal;line-height:1.5'>5 · Processo interno não seguido / não documentado</span></td><td>1.6h</td></tr></tbody>
+  </table></div>
+  <div class="insight-box">💡 <strong>Padrão da semana:</strong> 6/7 indevidos de Conta Global — elegibilidade pós-downgrade e canal Wise. Ação: atualizar script CX para downgrade UV e reforçar treinamento sobre segundo nível Wise (Weduka).</div>
+</div></div>
+
+<!-- TAB 2 -->
+<div id="tab-mensal" class="tab-page"><div class="page">
+  <div class="header">
+    <h1>Mobility – Travel &nbsp;|&nbsp; Visão Mensal + Reporters</h1>
+    <div class="subtitle">Dez/2025 a Mar/2026 · <span>⚠️ Março em aberto (01–23/03)</span></div>
+  </div>
+  <h2>1. Volume Mensal — Devidos · Indevidos · Em Tratativa</h2>
+  <div class="chart-row">
+    <div class="chart-box"><h3>Volume total — devidos · indevidos · em tratativa</h3><div style="position:relative;height:240px"><canvas id="chartMBar"></canvas></div></div>
+    <div class="chart-box"><h3>% indevidos confirmados por mês</h3><div style="position:relative;height:240px"><canvas id="chartMLine"></canvas></div></div>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Mês</th><th>Devidos</th><th>Indevidos</th><th>Em tratativa</th><th>Total</th><th>% Indevidos</th><th>Mediana SLA</th></tr></thead>
+    <tbody><tr><td>Dez/2025</td><td>83</td><td style='color:#E53935;font-weight:700'>17</td><td style='color:#e67e22'>0</td><td><strong>100</strong></td><td style='color:#E53935;font-weight:700'>17.0%</td><td>51.9h</td></tr><tr><td>Jan/2026</td><td>76</td><td style='color:#E53935;font-weight:700'>18</td><td style='color:#e67e22'>0</td><td><strong>94</strong></td><td style='color:#E53935;font-weight:700'>19.1%</td><td>71.1h</td></tr><tr><td>Fev/2026</td><td>56</td><td style='color:#E53935;font-weight:700'>43</td><td style='color:#e67e22'>0</td><td><strong>99</strong></td><td style='color:#E53935;font-weight:700'>43.4%</td><td>65.9h</td></tr><tr><td>Mar/2026 ⚠️</td><td>31</td><td style='color:#E53935;font-weight:700'>35</td><td style='color:#e67e22'>34</td><td><strong>100</strong></td><td style='color:#E53935;font-weight:700'>35.0%</td><td>40.4h</td></tr></tbody>
+  </table></div>
+  <div class="insight-box">💡 Pico em Fev/26 (43.4%). Tendência de queda nas semanas recentes de março: 66.7% → 57.1% → 33.3% → 21.9%.</div>
+
+  <h2>2. Volume por Assunto (RT) — Mensal</h2>
+  <div class="legend-rt">
+    <span><span class="ldot" style="background:#8E24AA"></span>Conta Global</span>
+    <span><span class="ldot" style="background:#1E88E5"></span>Detran</span>
+    <span><span class="ldot" style="background:#00ACC1"></span>eSIM</span>
+    <span><span class="ldot" style="background:#D81B60"></span>Seguro Viagem</span>
+    <span><span class="ldot" style="background:#607D8B"></span>NuViagens/Hopper</span>
+  </div>
+  <div class="chart-row">
+    <div class="chart-box"><h3>Volume por assunto — mês a mês</h3><div style="position:relative;height:260px"><canvas id="chartRTM"></canvas></div></div>
+    <div class="chart-box"><div style="font-size:12px;padding:8px 4px;line-height:1.8">
+      <p>📌 <strong>Seguro Viagem:</strong> 14 em Dez/25, 9 em Jan/26 → zero desde Fev/26. Possível sazonalidade (férias de fim de ano) ou mudança de roteamento. Vale confirmar com o time OTA.</p><br>
+      <p>📌 <strong>NuViagens/Hopper:</strong> volume baixo (2–3/mês), zerou em Mar/26.</p><br>
+      <p>📌 <strong>Detran:</strong> surge em Fev/26 (9) e dispara em Mar/26 (20). Padrão recorrente de compensação de pagamentos não refletidos pelo parceiro.</p>
+    </div></div>
+  </div>
+
+  <h2>3. Reporters — Indevidos Acumulado Março/2026 <span class="sec-badge">01–23/03</span></h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Reporter</th><th style="text-align:center">Indevidos</th></tr></thead>
+    <tbody><tr><td>Samara Souza</td><td style='text-align:center;font-weight:700'>3</td></tr><tr><td>Valeria Kaneda</td><td style='text-align:center;font-weight:700'>2</td></tr><tr><td>Bruna Diniz</td><td style='text-align:center;font-weight:700'>2</td></tr><tr><td>Camila Lumonde</td><td style='text-align:center;font-weight:700'>2</td></tr><tr><td>Caio Veronesi</td><td style='text-align:center;font-weight:700'>2</td></tr><tr><td>Reuel Passos</td><td style='text-align:center;font-weight:700'>2</td></tr><tr><td>Leonardo Vaz</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Yasmin Martins</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Kamilla Kamilla</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Ana Melo</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Larissa Cecconello</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Gilvania Silva</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Valdecléia Batista</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Beatriz Araujo</td><td style='text-align:center;font-weight:700'>1</td></tr><tr><td>Aline Santos</td><td style='text-align:center;font-weight:700'>1</td></tr></tbody>
+  </table></div>
+  <div class="insight-box">💡 Distribuição ampla sem concentração em poucos reporters — problema sistêmico de conhecimento. Ação: reforço de treinamento direcionado sobre elegibilidade Conta Global e canal Wise.</div>
+</div></div>
+
+<!-- TAB 3 -->
+<div id="tab-sla" class="tab-page"><div class="page">
+  <div class="header">
+    <h1>Mobility – Travel &nbsp;|&nbsp; SLA — Últimas 4 Semanas</h1>
+    <div class="subtitle">Mediana e P90 de resolução · apenas tickets resolvidos</div>
+  </div>
+  <div class="cards">
+    <div class="card c-total"><div class="value">18.8h</div><div class="label">Mediana geral</div><div class="sub">semana 15–21/03 · n=9</div></div>
+    <div class="card c-devidos"><div class="value">56.9h</div><div class="label">Mediana devidos</div><div class="sub">semana 15–21/03 · n=2</div></div>
+    <div class="card c-indevidos"><div class="value">7.5h</div><div class="label">Mediana indevidos</div><div class="sub">semana 15–21/03 · n=7</div></div>
+    <div class="card c-tratativa"><div class="value">66.3h</div><div class="label">P90 geral</div><div class="sub">semana 15–21/03 · n=9</div></div>
+  </div>
+  <h2>1. Evolução Semanal — Mediana e P90</h2>
+  <div class="chart-row">
+    <div class="chart-box"><h3>Mediana de resolução (horas)</h3><div style="position:relative;height:230px"><canvas id="chartSlaM"></canvas></div></div>
+    <div class="chart-box"><h3>P90 geral (horas)</h3><div style="position:relative;height:230px"><canvas id="chartSlaP"></canvas></div></div>
+  </div>
+  <h2>2. Tabela Resumo por Semana</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Semana</th><th>n</th><th>Mediana</th><th>P90</th><th>n dev.</th><th>Med. dev.</th><th>P90 dev.</th><th>n indev.</th><th>Med. indev.</th><th>P90 indev.</th></tr></thead>
+    <tbody><tr><td>22–28/fev</td><td>24</td><td>35.0h</td><td>138.4h</td><td>8</td><td>77.2h</td><td>138.4h</td><td>16</td><td>28.6h</td><td>97.3h</td></tr><tr><td>01–07/mar</td><td>25</td><td>50.1h</td><td>172.3h</td><td>11</td><td>50.1h</td><td>141.6h</td><td>14</td><td>49.1h</td><td>120.7h</td></tr><tr><td>08–14/mar</td><td>30</td><td>31.6h</td><td>265.5h</td><td>18</td><td>31.6h</td><td>272.0h</td><td>12</td><td>34.8h</td><td>118.1h</td></tr><tr><td>15–21/mar ⚠️</td><td>9</td><td>18.8h</td><td>66.3h</td><td>2</td><td>56.9h</td><td>—</td><td>7</td><td>7.5h</td><td>54.8h</td></tr></tbody>
+  </table></div>
+  <div class="alert-box">⚠️ P90 elevado em 08–14/mar (265.5h): influenciado por outlier de parceiro (Wise/Detran). A mediana (22.9h) representa melhor o comportamento real.</div>
+</div></div>
+
+<script>
+Chart.register(ChartDataLabels);
+function switchTab(n,b){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active'); b.classList.add('active');
+}
+const CLF={dev:'#4CAF50',ind:'#E53935',trt:'#FFB74D'};
+const RT={cg:'#8E24AA',det:'#1E88E5',esim:'#00ACC1',seg:'#D81B60',hop:'#607D8B'};
+
+function stackedOpts(totals){
+  return {
+    responsive:true,maintainAspectRatio:false,
+    scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:11}}},
+      datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>0,color:'#fff',font:{weight:'bold',size:10},formatter:v=>v>0?v:''}
+    },
+    animation:{onComplete:ev=>{
+      const ch=ev.chart,ctx2=ch.ctx,last=ch.getDatasetMeta(ch.data.datasets.length-1);
+      ctx2.save();ctx2.font='bold 11px Segoe UI';ctx2.fillStyle='#3D1466';ctx2.textAlign='center';
+      last.data.forEach((bar,i)=>{ if(totals[i]>0) ctx2.fillText(totals[i],bar.x,bar.y-6); });
+      ctx2.restore();
+    }}
+  };
+}
+function simpleOpts(sfx){
+  return {responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}},
+    plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'#3D1466',font:{weight:'bold',size:11},formatter:v=>v+(sfx||'')}}
+  };
+}
+
+// 1. Weekly stacked
+new Chart(document.getElementById('chartBar'),{type:'bar',
+  data:{labels:["22\u201328/fev", "01\u201307/mar", "08\u201314/mar", "15\u201321/mar \u26a0\ufe0f"],datasets:[
+    {label:'Devidos',data:[8, 11, 18, 2],backgroundColor:CLF.dev},
+    {label:'Indevidos',data:[16, 16, 12, 7],backgroundColor:CLF.ind},
+    {label:'Em tratativa',data:[0, 1, 6, 23],backgroundColor:CLF.trt},
+  ]},options:stackedOpts([24, 28, 36, 32])
+});
+
+// 2. % line
+new Chart(document.getElementById('chartLine'),{type:'line',
+  data:{labels:["22\u201328/fev", "01\u201307/mar", "08\u201314/mar", "15\u201321/mar \u26a0\ufe0f"],datasets:[{label:'% Indevidos',data:[66.7, 57.1, 33.3, 21.9],borderColor:CLF.ind,backgroundColor:'rgba(229,57,53,0.1)',tension:0.3,fill:true,pointRadius:5}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}},
+    plugins:{legend:{position:'bottom',labels:{font:{size:11}}},datalabels:{align:'top',anchor:'top',color:CLF.ind,font:{weight:'bold',size:11},formatter:v=>v+'%'}}
+  }
+});
+
+// 3. RT weekly stacked bar (NEW)
+new Chart(document.getElementById('chartRTWeekly'),{type:'bar',
+  data:{labels:["22\u201328/fev", "01\u201307/mar", "08\u201314/mar", "15\u201321/mar \u26a0\ufe0f"],datasets:[
+    {label:'Conta Global',data:[18, 21, 31, 20],backgroundColor:RT.cg},
+    {label:'Detran',data:[6, 6, 4, 10],backgroundColor:RT.det},
+    {label:'eSIM',data:[0, 1, 1, 2],backgroundColor:RT.esim},
+  ]},options:stackedOpts([24, 28, 36, 32])
+});
+
+// 4. RT current week × classification
+new Chart(document.getElementById('chartRTCur'),{type:'bar',
+  data:{labels:["Conta Global", "Detran", "eSIM"],datasets:[
+    {label:'Devidos',data:[1, 1, 0],backgroundColor:CLF.dev},
+    {label:'Indevidos',data:[6, 0, 1],backgroundColor:CLF.ind},
+    {label:'Em tratativa',data:[13, 9, 1],backgroundColor:CLF.trt},
+  ]},options:stackedOpts([20, 10, 2])
+});
+
+// 5. Indevidos weekly stacked bar por RT (substituiu pizza)
+new Chart(document.getElementById('chartIndevWeekly'),{type:'bar',
+  data:{labels:["22\u201328/fev", "01\u201307/mar", "08\u201314/mar", "15\u201321/mar \u26a0\ufe0f"],datasets:[
+    {label:'Conta Global',data:[12, 13, 10, 6],backgroundColor:RT.cg},
+    {label:'Detran',data:[4, 2, 1, 0],backgroundColor:RT.det},
+    {label:'eSIM',data:[0, 1, 1, 1],backgroundColor:RT.esim},
+  ]},options:stackedOpts([16, 16, 12, 7])
+});
+
+// 6. Monthly stacked
+new Chart(document.getElementById('chartMBar'),{type:'bar',
+  data:{labels:['Dez/25','Jan/26','Fev/26','Mar/26 ⚠️'],datasets:[
+    {label:'Devidos',data:[83,76,56,31],backgroundColor:CLF.dev},
+    {label:'Indevidos',data:[17,18,43,35],backgroundColor:CLF.ind},
+    {label:'Em tratativa',data:[0,0,0,34],backgroundColor:CLF.trt},
+  ]},options:stackedOpts([100,94,99,100])
+});
+
+// 7. Monthly % line
+new Chart(document.getElementById('chartMLine'),{type:'line',
+  data:{labels:['Dez/25','Jan/26','Fev/26','Mar/26 ⚠️'],datasets:[{label:'% Indevidos',data:[17.0,19.1,43.4,35.0],borderColor:CLF.ind,backgroundColor:'rgba(229,57,53,0.1)',tension:0.3,fill:true,pointRadius:5}]},
+  options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}},
+    plugins:{legend:{position:'bottom',labels:{font:{size:11}}},datalabels:{align:'top',anchor:'top',color:CLF.ind,font:{weight:'bold',size:11},formatter:v=>v+'%'}}
+  }
+});
+
+// 8. RT monthly stacked
+new Chart(document.getElementById('chartRTM'),{type:'bar',
+  data:{labels:['Dez/25','Jan/26','Fev/26','Mar/26 ⚠️'],datasets:[
+    {label:'Conta Global',data:[67, 72, 77, 76],backgroundColor:RT.cg},
+    {label:'Detran',data:[0, 0, 9, 20],backgroundColor:RT.det},
+    {label:'eSIM',data:[17, 12, 9, 4],backgroundColor:RT.esim},
+    {label:'Seguro Viagem',data:[14, 9, 0, 0],backgroundColor:RT.seg},
+    {label:'NuViagens/Hopper',data:[2, 1, 3, 0],backgroundColor:RT.hop},
+  ]},options:stackedOpts([100, 94, 98, 100])
+});
+
+// 10. SLA mediana — 3 linhas: geral, devidos, indevidos
+new Chart(document.getElementById('chartSlaM'),{type:'line',
+  data:{labels:["22\u201328/fev", "01\u201307/mar", "08\u201314/mar", "15\u201321/mar \u26a0\ufe0f"],datasets:[
+    {label:'Geral',data:[35.0, 50.1, 31.6, 18.8],borderColor:'#7B4FA6',backgroundColor:'rgba(123,79,166,.08)',tension:.3,fill:false,pointBackgroundColor:'#7B4FA6',pointRadius:5,borderWidth:2},
+    {label:'Devidos',data:[77.2, 50.1, 31.6, 56.9],borderColor:'#4CAF50',backgroundColor:'rgba(76,175,80,.08)',tension:.3,fill:false,pointBackgroundColor:'#4CAF50',pointRadius:5,borderWidth:2},
+    {label:'Indevidos',data:[28.6, 49.1, 34.8, 7.5],borderColor:'#E53935',backgroundColor:'rgba(229,57,53,.08)',tension:.3,fill:false,pointBackgroundColor:'#E53935',pointRadius:5,borderWidth:2},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'h',font:{size:11}},grid:{color:'#f0eaf8'}},x:{ticks:{font:{size:10}},grid:{display:false}}},
+    plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12}},
+      datalabels:{anchor:'end',align:'top',color:ctx=>['#7B4FA6','#4CAF50','#E53935'][ctx.datasetIndex],font:{weight:'bold',size:10},formatter:v=>v!=null?v+'h':''}
+    }
+  }
+});
+
+// 11. SLA P90
+new Chart(document.getElementById('chartSlaP'),{type:'bar',
+  data:{labels:["22\u201328/fev", "01\u201307/mar", "08\u201314/mar", "15\u201321/mar \u26a0\ufe0f"],datasets:[{label:'P90 (h)',data:[138.4, 172.3, 265.5, 66.3],backgroundColor:'rgba(90,30,130,0.55)'}]},
+  options:simpleOpts('h')
+});
+</script>
+</body></html>
